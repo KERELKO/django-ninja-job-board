@@ -1,5 +1,6 @@
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -17,7 +18,6 @@ ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -26,8 +26,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'src.apps.profiles.apps.ProfilesConfig',
+    'taggit',
+
     'src.apps.users.apps.UsersConfig',
+    'src.apps.vacancies.apps.VacanciesConfig',
+    'src.apps.profiles.apps.ProfilesConfig',
 ]
 
 MIDDLEWARE = [
@@ -81,3 +84,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Taggit
+TAGGIT_CASE_INSENSITIVE = True
