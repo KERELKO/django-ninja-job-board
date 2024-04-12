@@ -1,13 +1,9 @@
-from uuid import uuid4
-
-from django.utils import timezone
 from django.db import models
 from django.utils.text import slugify
 
 from taggit.managers import TaggableManager
 
-from src.apps.profiles.models import EmployerProfile, JobSeekerProfile
-from src.core.utils.time import get_elapsed_time_with_message
+from src.core.common.models import TimedBaseModel
 
 
 class AvaiableManager(models.Manager):
@@ -15,18 +11,7 @@ class AvaiableManager(models.Manager):
         return Vacancy.objects.filter(open=True)
 
 
-class Vacancy(models.Model):
-    # Relationships
-    employer = models.ForeignKey(
-        EmployerProfile,
-        on_delete=models.CASCADE,
-        related_name='vacancies',
-    )
-    interested = models.ManyToManyField(
-        JobSeekerProfile,
-        related_name='interested_in',
-        blank=True,
-    )
+class Vacancy(TimedBaseModel):
     # Fields
     title = models.CharField(
         max_length=300
@@ -41,16 +26,9 @@ class Vacancy(models.Model):
     )
     location = models.CharField(
         max_length=255,
-        blank=True,
-        null=True
     )
     company_name = models.CharField(
         max_length=255,
-        blank=True,
-        null=True
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True
     )
     remote = models.BooleanField(
         blank=True,
@@ -73,10 +51,12 @@ class Vacancy(models.Model):
     available = AvaiableManager()
 
     class Meta:
-        ordering = ('created_at',)
-        indexes = [
+        ordering = (
+            'created_at',
+        )
+        indexes = (
             models.Index(fields=['slug']),
-        ]
+        )
         verbose_name_plural = 'vacancies'
 
     def __str__(self):
@@ -86,19 +66,5 @@ class Vacancy(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         if not self.slug:
-            self.slug = slugify(str(lambda: uuid4()))
+            self.slug = self.id
         return super().save(*args, **kwargs)
-
-    def time_elapsed_since_creation(self) -> tuple[int, str, str]:
-        '''
-        Returns the elapsed time since creation,
-        in tuple[int, str, str]:
-            int - the elapsed time
-            str - time unit
-            str - message
-        see utility 'get_elapsed_time_with_message'
-        '''
-        now = timezone.now()
-        elapsed_time = now - self.created_at
-        # Determine time unit based on elapsed time
-        return get_elapsed_time_with_message(elapsed_time)
