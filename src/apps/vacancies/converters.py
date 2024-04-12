@@ -1,5 +1,5 @@
-from src.core.common.converters.converters import BaseConverter
-from src.core.common.converters.exceptions import IncorrectConverterArgument
+from src.common.converters.converters import BaseConverter
+from src.common.converters.exceptions import IncorrectConverterArgument
 
 from .models import Vacancy as VacancyModel
 from .entities import Vacancy as VacancyEntity

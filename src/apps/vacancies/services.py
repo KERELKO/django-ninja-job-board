@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from django.db.models import Q
 
-from src.core.common.converters.converters import BaseConverter
+from src.common.converters.converters import BaseConverter
 
 from .filters import VacancyFilters
 from .converters import ORMVacancyConverter
@@ -33,6 +33,7 @@ class ORMVacancyService:
         vacancy_list = Vacancy.objects.filter(query)[offset: offset + limit]
         return [self.converter.convert_to_entity(vacancy) for vacancy in vacancy_list]
 
-    def get_vacancy_count(self) -> int:
-        vacancy_count = Vacancy.available.count()
+    def get_vacancy_count(self, filters: VacancyFilters) -> int:
+        query = self._build_queryset(filters=filters)
+        vacancy_count = Vacancy.available.filter(query).count()
         return vacancy_count
