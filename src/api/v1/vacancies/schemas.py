@@ -1,10 +1,11 @@
 from datetime import datetime
 
+from ninja import Schema
+
 from src.apps.vacancies.entities import Vacancy as VacancyEntity
-from src.api.schemas import BaseSchema
 
 
-class BaseVacancySchema(BaseSchema):
+class BaseVacancySchema(Schema):
     ...
 
 

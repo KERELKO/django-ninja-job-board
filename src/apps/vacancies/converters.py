@@ -18,7 +18,7 @@ class ORMVacancyConverter(BaseConverter):
             )
 
     def convert_to_entity(self, vacancy: VacancyModel) -> VacancyEntity:
-        '''Convert Django model into Entity'''
+        '''Convert Django model into entity'''
         # Hardcoding
         entity = VacancyEntity(
             id=vacancy.id,
@@ -37,6 +37,7 @@ class ORMVacancyConverter(BaseConverter):
         return entity
 
     def convert_to_model(self, entity: VacancyEntity) -> VacancyModel:
+        '''Convert entity into Django model'''
         model = VacancyModel(
             id=entity.id,
             title=entity.title,

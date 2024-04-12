@@ -1,10 +1,20 @@
-from ninja import Schema as ResponseSchema
-from pydantic import BaseModel
+from typing import TypeVar, Generic
+
+from ninja import Field, Schema as Schema
+
+from core.common.filters.pagination import PaginationOut
 
 
-class BaseSchema(BaseModel):
-    ...
+TData = TypeVar('TData')
+TListItem = TypeVar('TListItem')
 
 
-class BaseResponseSchema(ResponseSchema):
-    ...
+class ListPaginatedRespoonse(Schema, Generic[TListItem]):
+    items: TListItem = Field(default_factory=list)
+    pagination: PaginationOut
+
+
+class APIResponseSchema(Schema, Generic[TData]):
+    data: TData | dict = Field(default_factory=dict)
+    meta: dict = Field(default_factory=dict)
+    errors: dict = Field(default_factory=dict)
