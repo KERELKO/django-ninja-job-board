@@ -3,7 +3,7 @@ from django.utils.text import slugify
 
 from taggit.managers import TaggableManager
 
-from src.common.models import TimedBaseModel
+from src.common.models.base import TimedBaseModel
 
 
 class AvaiableManager(models.Manager):

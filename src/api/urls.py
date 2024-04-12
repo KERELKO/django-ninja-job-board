@@ -9,5 +9,5 @@ api.add_router(prefix='/vacancies', router=vacancy_router)
 
 
 urlpatterns = [
-    path('v1/', api.urls),
+    path('', api.urls),
 ]

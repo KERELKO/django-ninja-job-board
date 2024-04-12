@@ -1,16 +1,16 @@
 from django.http import HttpRequest
 from ninja import Router, Query
 
-from src.apps.vacancies.filters import VacancyFilters
+from src.apps.vacancies.filters.vacancies import VacancyFilters
 
 from src.common.filters.pagination import PaginationIn, PaginationOut
-from src.apps.vacancies.services import ORMVacancyService
+from src.apps.vacancies.services.vacancies import ORMVacancyService
 from src.api.schemas import ListPaginatedResponse, APIResponseSchema
 
 from .schemas import VacancyOut
 
 
-router = Router()
+router = Router(tags=['vacancies'])
 service = ORMVacancyService()
 
 
@@ -43,3 +43,12 @@ def get_vacancy_list(
             pagination=pagination_out,
         )
     )
+
+
+@router.get('vacancy', response=APIResponseSchema[VacancyOut])
+def get_vacancy(
+    request: HttpRequest,
+    id: int
+) -> APIResponseSchema[VacancyOut]:
+    vacancy_entity = service.get_vacancy_by_id(id)
+    return APIResponseSchema(data=VacancyOut.from_entity(vacancy_entity))

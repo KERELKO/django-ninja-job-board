@@ -2,16 +2,17 @@ from dataclasses import dataclass
 
 from django.db.models import Q
 
-from src.common.converters.converters import BaseConverter
+from src.common.services.base import BaseService
+from src.common.converters.base import BaseConverter
 
-from .filters import VacancyFilters
-from .converters import ORMVacancyConverter
-from .models import Vacancy
-from .entities import Vacancy as VacancyEntity
+from ..filters.vacancies import VacancyFilters
+from ..converters.vacancies import ORMVacancyConverter
+from ..entities.vacancies import Vacancy as VacancyEntity
+from ..models.vacancies import Vacancy
 
 
 @dataclass
-class ORMVacancyService:
+class ORMVacancyService(BaseService):
     converter: BaseConverter = ORMVacancyConverter()
 
     def _build_queryset(self, filters: VacancyFilters) -> Q:
@@ -21,6 +22,12 @@ class ORMVacancyService:
                 Q(title__icontains=filters.search) |
                 Q(description__icontains=filters.search)
             )
+        if filters.required_skills:
+            ...
+        if filters.remote is not None:
+            query &= Q(remote=filters.remote)
+        if filters.required_experience:
+            query &= Q(required_experience__gte=filters.required_experience)
         return query
 
     def get_vacancy_list(
@@ -31,9 +38,13 @@ class ORMVacancyService:
     ) -> list[VacancyEntity]:
         query = self._build_queryset(filters=filters)
         vacancy_list = Vacancy.objects.filter(query)[offset: offset + limit]
-        return [self.converter.convert_to_entity(vacancy) for vacancy in vacancy_list]
+        return [self.converter.handle(vacancy) for vacancy in vacancy_list]
 
     def get_vacancy_count(self, filters: VacancyFilters) -> int:
         query = self._build_queryset(filters=filters)
         vacancy_count = Vacancy.available.filter(query).count()
         return vacancy_count
+
+    def get_vacancy_by_id(self, id: int) -> VacancyEntity:
+        vacancy = Vacancy.objects.get(id=id)
+        return self.converter.handle(vacancy)

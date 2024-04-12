@@ -1,17 +1,21 @@
-from src.common.converters.converters import BaseConverter
+from src.common.converters.base import BaseConverter
 from src.common.converters.exceptions import IncorrectConverterArgument
 
-from .models import Vacancy as VacancyModel
-from .entities import Vacancy as VacancyEntity
+from ..models.vacancies import Vacancy as VacancyModel
+from ..entities.vacancies import Vacancy as VacancyEntity
 
 
+# TODO: reduce hard coding
 class ORMVacancyConverter(BaseConverter):
 
-    def handle(self, obj: VacancyModel | VacancyEntity):
+    def handle(
+        self,
+        obj: VacancyModel | VacancyEntity
+    ) -> VacancyModel | VacancyEntity:
         if obj.__class__ == VacancyModel:
-            ...
+            return self.convert_to_entity(obj)
         elif obj.__class__ == VacancyEntity:
-            ...
+            return self.convert_to_model(obj)
         else:
             raise IncorrectConverterArgument(
                 choices=[VacancyModel.__name__, VacancyEntity.__name__]
@@ -19,7 +23,6 @@ class ORMVacancyConverter(BaseConverter):
 
     def convert_to_entity(self, vacancy: VacancyModel) -> VacancyEntity:
         '''Convert Django model into entity'''
-        # Hardcoding
         entity = VacancyEntity(
             id=vacancy.id,
             title=vacancy.title,
