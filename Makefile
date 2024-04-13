@@ -10,3 +10,11 @@ migrate:
 .PHONY: superuser
 superuser:
 	${EXEC} ${APP} ${MANAGE_PY} createsuperuser
+
+.PHONY: migrations
+migrations:
+	$(EXEC) ${APP} ${MANAGE_PY} makemigrations vacancies profiles users
+
+.PHONY: shell
+shell:
+	$(EXEC) ${APP} ${MANAGE_PY} shell

@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from taggit.managers import TaggableManager
+from django.contrib.postgres.fields import ArrayField
 
 from src.apps.users.models import CustomUser
 
@@ -41,7 +41,10 @@ class JobSeekerProfile(BaseProfile):
     about_me = models.TextField()
     experience = models.PositiveIntegerField(default=0)
 
-    skills = TaggableManager(verbose_name='skills')
+    skills = ArrayField(
+        models.CharField(max_length=30),
+        blank=False,
+    )
 
     class Meta:
         ordering = ('experience',)

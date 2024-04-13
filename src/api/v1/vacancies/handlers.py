@@ -9,13 +9,13 @@ from src.api.schemas import ListPaginatedResponse, APIResponseSchema
 
 from .schemas import VacancyOut
 
-
+# TODO: make search by 'company_name', 'location', created_at_gte
 router = Router(tags=['vacancies'])
 service = ORMVacancyService()
 
 
 @router.get(
-    '/list',
+    '',
     response=APIResponseSchema[ListPaginatedResponse[VacancyOut]]
 )
 def get_vacancy_list(
@@ -45,7 +45,7 @@ def get_vacancy_list(
     )
 
 
-@router.get('vacancy', response=APIResponseSchema[VacancyOut])
+@router.get('/{id}', response=APIResponseSchema[VacancyOut])
 def get_vacancy(
     request: HttpRequest,
     id: int

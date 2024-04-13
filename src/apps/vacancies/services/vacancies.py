@@ -22,12 +22,22 @@ class ORMVacancyService(BaseService):
                 Q(title__icontains=filters.search) |
                 Q(description__icontains=filters.search)
             )
-        if filters.required_skills:
-            ...
         if filters.remote is not None:
             query &= Q(remote=filters.remote)
-        if filters.required_experience:
-            query &= Q(required_experience__gte=filters.required_experience)
+        if filters.required_experience__gte:
+            query &= Q(
+                required_experience__gte=filters.required_experience__gte
+            )
+        if filters.required_skills:
+            query &= Q(
+                required_skills__contains=filters.required_skills,
+            )
+        if filters.created_at__gte:
+            query &= Q(created_at__gte=filters.created_at__gte)
+        if filters.location:
+            query &= Q(location=filters.location)
+        if filters.company_name:
+            query &= Q(company_name=filters.company_name)
         return query
 
     def get_vacancy_list(

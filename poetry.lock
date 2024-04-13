@@ -69,20 +69,6 @@ doc = ["markdown-include", "mkdocs", "mkdocs-material", "mkdocstrings"]
 test = ["django-stubs", "mypy (==1.7.1)", "psycopg2-binary", "pytest", "pytest-asyncio", "pytest-cov", "pytest-django", "ruff (==0.1.7)"]
 
 [[package]]
-name = "django-taggit"
-version = "5.0.1"
-description = "django-taggit is a reusable Django application for simple tagging."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "django-taggit-5.0.1.tar.gz", hash = "sha256:edcd7db1e0f35c304e082a2f631ddac2e16ef5296029524eb792af7430cab4cc"},
-    {file = "django_taggit-5.0.1-py3-none-any.whl", hash = "sha256:a0ca8a28b03c4b26c2630fd762cb76ec39b5e41abf727a7b66f897a625c5e647"},
-]
-
-[package.dependencies]
-Django = ">=4.1"
-
-[[package]]
 name = "psycopg2"
 version = "2.9.9"
 description = "psycopg2 - Python-PostgreSQL Database Adapter"
@@ -255,4 +241,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "6b0bd5a231e1a4f13569c7bc14891eb24530fb9663375b20797023e41b843666"
+content-hash = "ff661f85f076d2e0951da873a4dbe356883e5310fef16089be9bbf6b137d60cc"

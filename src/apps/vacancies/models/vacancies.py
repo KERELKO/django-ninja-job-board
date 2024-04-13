@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
-
-from taggit.managers import TaggableManager
+from django.contrib.postgres.fields import ArrayField
 
 from src.common.models.base import TimedBaseModel
 
@@ -36,17 +35,16 @@ class Vacancy(TimedBaseModel):
     )
     required_experience = models.PositiveIntegerField(
         blank=True,
-        null=True,
         default=0,
     )
     open = models.BooleanField(
         default=True,
-        blank=True
+    )
+    required_skills = ArrayField(
+        models.CharField(max_length=30),
+        blank=False,
     )
     # Managers
-    required_skills = TaggableManager(
-        verbose_name='required_skills'
-    )
     objects = models.Manager()
     available = AvaiableManager()
 

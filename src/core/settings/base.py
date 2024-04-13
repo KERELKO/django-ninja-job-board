@@ -26,8 +26,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'taggit',
-
     'src.apps.users.apps.UsersConfig',
     'src.apps.vacancies.apps.VacanciesConfig',
     'src.apps.profiles.apps.ProfilesConfig',
@@ -84,6 +82,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Taggit
-TAGGIT_CASE_INSENSITIVE = True
