@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.contrib.postgres.fields import ArrayField
 
+from src.apps.profiles.models.profiles import EmployerProfile, JobSeekerProfile
 from src.common.models.base import TimedBaseModel
 
 
@@ -11,6 +12,17 @@ class AvaiableManager(models.Manager):
 
 
 class Vacancy(TimedBaseModel):
+    # Relationships
+    employer = models.ForeignKey(
+        EmployerProfile,
+        on_delete=models.CASCADE,
+        related_name='vacancies',
+    )
+    interested_candidates = models.ManyToManyField(
+        JobSeekerProfile,
+        related_name='interested_in',
+        blank=True,
+    )
     # Fields
     title = models.CharField(
         max_length=300
@@ -18,18 +30,13 @@ class Vacancy(TimedBaseModel):
     description = models.TextField(
         blank=False
     )
-    slug = models.SlugField(
-        blank=True,
-        null=False,
-        unique_for_date='created_at',
-    )
     location = models.CharField(
         max_length=255,
     )
     company_name = models.CharField(
         max_length=255,
     )
-    remote = models.BooleanField(
+    is_remote = models.BooleanField(
         blank=True,
         null=True,
     )
@@ -37,12 +44,18 @@ class Vacancy(TimedBaseModel):
         blank=True,
         default=0,
     )
-    open = models.BooleanField(
-        default=True,
-    )
     required_skills = ArrayField(
         models.CharField(max_length=30),
         blank=False,
+    )
+    # Other fields
+    open = models.BooleanField(
+        default=True,
+    )
+    slug = models.SlugField(
+        blank=True,
+        null=False,
+        unique_for_date='created_at',
     )
     # Managers
     objects = models.Manager()

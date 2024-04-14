@@ -22,15 +22,18 @@ class ORMVacancyService(BaseService):
                 Q(title__icontains=filters.search) |
                 Q(description__icontains=filters.search)
             )
-        if filters.remote is not None:
-            query &= Q(remote=filters.remote)
+        if filters.is_remote is not None:
+            query &= Q(remote=filters.is_remote)
         if filters.required_experience__gte:
             query &= Q(
                 required_experience__gte=filters.required_experience__gte
             )
         if filters.required_skills:
+            # ?Does icontains work with ArrayField?
             query &= Q(
-                required_skills__contains=filters.required_skills,
+                required_skills__contains=[
+                    skill.lower() for skill in filters.required_skills
+                ],
             )
         if filters.created_at__gte:
             query &= Q(created_at__gte=filters.created_at__gte)
@@ -42,9 +45,9 @@ class ORMVacancyService(BaseService):
 
     def get_vacancy_list(
         self,
-        offset: int,
-        limit: int,
-        filters: VacancyFilters
+        filters: VacancyFilters,
+        offset: int = 0,
+        limit: int = 20,
     ) -> list[VacancyEntity]:
         query = self._build_queryset(filters=filters)
         vacancy_list = Vacancy.objects.filter(query)[offset: offset + limit]

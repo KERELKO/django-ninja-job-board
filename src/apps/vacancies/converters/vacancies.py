@@ -10,7 +10,7 @@ class ORMVacancyConverter(BaseConverter):
 
     def handle(
         self,
-        obj: VacancyModel | VacancyEntity
+        obj: VacancyModel | VacancyEntity,
     ) -> VacancyModel | VacancyEntity:
         if obj.__class__ == VacancyModel:
             return self.convert_to_entity(obj)
@@ -24,10 +24,16 @@ class ORMVacancyConverter(BaseConverter):
     def convert_to_entity(self, vacancy: VacancyModel) -> VacancyEntity:
         '''Convert Django model into entity'''
         entity = VacancyEntity(
+            # ids
             id=vacancy.id,
+            employer=vacancy.employer.to_entity(),
+            interested_candidates=[
+                interested.to_entity() for interested in vacancy.interested_candidates.all()
+            ],
+            # fields
             title=vacancy.title,
             description=vacancy.description,
-            remote=vacancy.remote,
+            is_remote=vacancy.is_remote,
             required_experience=vacancy.required_experience,
             location=vacancy.location,
             required_skills=vacancy.required_skills,
@@ -41,9 +47,11 @@ class ORMVacancyConverter(BaseConverter):
         '''Convert entity into Django model'''
         model = VacancyModel(
             id=entity.id,
+            employer=entity.employer,
+            interested_candidates=entity.interested_candidates,
             title=entity.title,
             description=entity.description,
-            remote=entity.remote,
+            is_remote=entity.is_remote,
             company_name=entity.company_name,
             required_experience=entity.required_experience,
             location=entity.location,

@@ -2,18 +2,19 @@ from django.http import HttpRequest
 from ninja import Router, Query
 
 from src.apps.vacancies.filters.vacancies import VacancyFilters
+from src.apps.vacancies.services.vacancies import ORMVacancyService
 
 from src.common.filters.pagination import PaginationIn, PaginationOut
-from src.apps.vacancies.services.vacancies import ORMVacancyService
 from src.api.schemas import ListPaginatedResponse, APIResponseSchema
 
 from .schemas import VacancyOut
 
-# TODO: make search by 'company_name', 'location', created_at_gte
+
 router = Router(tags=['vacancies'])
 service = ORMVacancyService()
 
 
+# TODO: tests
 @router.get(
     '',
     response=APIResponseSchema[ListPaginatedResponse[VacancyOut]]
