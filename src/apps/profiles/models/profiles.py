@@ -26,6 +26,9 @@ class BaseProfile(models.Model):
     last_name = models.CharField(
         max_length=250
     )
+    email = models.CharField(
+        max_length=60,
+    )
 
     class Meta:
         abstract = True
@@ -60,10 +63,16 @@ class JobSeekerProfile(BaseProfile):
     class Meta:
         ordering = ('-first_name',)
 
+    def save(self, *args, **kwargs):
+        self.skills = [skill.lower() for skill in self.skills]
+        return super().save(*args, **kwargs)
+
     def to_entity(self) -> JobSeekerProfileEntity:
         return JobSeekerProfileEntity(
+            id=self.id,
             first_name=self.first_name,
             last_name=self.last_name,
+            email=self.email,
             age=self.age,
             about_me=self.about_me,
             experience=self.experience,
@@ -77,6 +86,8 @@ class EmployerProfile(BaseProfile):
 
     def to_entity(self) -> EmployerProfileEntity:
         return EmployerProfileEntity(
+            id=self.id,
+            email=self.email,
             first_name=self.first_name,
             last_name=self.last_name,
         )

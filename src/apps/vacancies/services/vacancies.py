@@ -5,10 +5,10 @@ from django.db.models import Q
 from src.common.services.base import BaseService
 from src.common.converters.base import BaseConverter
 
-from ..filters.vacancies import VacancyFilters
-from ..converters.vacancies import ORMVacancyConverter
-from ..entities.vacancies import Vacancy as VacancyEntity
-from ..models.vacancies import Vacancy
+from src.apps.vacancies.filters.vacancies import VacancyFilters
+from src.apps.vacancies.converters.vacancies import ORMVacancyConverter
+from src.apps.vacancies.entities.vacancies import Vacancy as VacancyEntity
+from src.apps.vacancies.models.vacancies import Vacancy
 
 
 @dataclass
@@ -29,12 +29,9 @@ class ORMVacancyService(BaseService):
                 required_experience__gte=filters.required_experience__gte
             )
         if filters.required_skills:
-            # ?Does icontains work with ArrayField?
-            query &= Q(
-                required_skills__contains=[
-                    skill.lower() for skill in filters.required_skills
-                ],
-            )
+            # ?Icontains does not work with ArrayField
+            skills = [skill.lower() for skill in filters.required_skills]
+            query &= Q(required_skills__contains=skills)
         if filters.created_at__gte:
             query &= Q(created_at__gte=filters.created_at__gte)
         if filters.location:
@@ -43,7 +40,7 @@ class ORMVacancyService(BaseService):
             query &= Q(company_name=filters.company_name)
         return query
 
-    def get_vacancy_list(
+    def get_list(
         self,
         filters: VacancyFilters,
         offset: int = 0,
@@ -53,11 +50,11 @@ class ORMVacancyService(BaseService):
         vacancy_list = Vacancy.objects.filter(query)[offset: offset + limit]
         return [self.converter.handle(vacancy) for vacancy in vacancy_list]
 
-    def get_vacancy_count(self, filters: VacancyFilters) -> int:
+    def get_total_count(self, filters: VacancyFilters) -> int:
         query = self._build_queryset(filters=filters)
         vacancy_count = Vacancy.available.filter(query).count()
         return vacancy_count
 
-    def get_vacancy_by_id(self, id: int) -> VacancyEntity:
+    def get_by_id(self, id: int) -> VacancyEntity:
         vacancy = Vacancy.objects.get(id=id)
         return self.converter.handle(vacancy)

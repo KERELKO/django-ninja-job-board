@@ -14,7 +14,7 @@ router = Router(tags=['vacancies'])
 service = ORMVacancyService()
 
 
-# TODO: tests
+# TODO: tests, CRUD
 @router.get(
     '',
     response=APIResponseSchema[ListPaginatedResponse[VacancyOut]]
@@ -22,14 +22,14 @@ service = ORMVacancyService()
 def get_vacancy_list(
     request: HttpRequest,
     pagination_in: Query[PaginationIn],
-    filters: Query[VacancyFilters]
+    filters: Query[VacancyFilters],
 ) -> APIResponseSchema[ListPaginatedResponse[VacancyOut]]:
-    vacancy_entity_list = service.get_vacancy_list(
+    vacancy_entity_list = service.get_list(
         offset=pagination_in.offset,
         limit=pagination_in.limit,
         filters=filters,
     )
-    vacancy_count = service.get_vacancy_count(filters=filters)
+    vacancy_count = service.get_total_count(filters=filters)
     vacancy_list = [
         VacancyOut.from_entity(vacancy) for vacancy in vacancy_entity_list
     ]
@@ -51,5 +51,5 @@ def get_vacancy(
     request: HttpRequest,
     id: int
 ) -> APIResponseSchema[VacancyOut]:
-    vacancy_entity = service.get_vacancy_by_id(id)
+    vacancy_entity = service.get_by_id(id)
     return APIResponseSchema(data=VacancyOut.from_entity(vacancy_entity))

@@ -78,4 +78,7 @@ class Vacancy(TimedBaseModel):
             self.slug = slugify(self.title)
         if not self.slug:
             self.slug = self.id
+        self.required_skills = [
+            skill.lower() for skill in self.required_skills
+        ]
         return super().save(*args, **kwargs)

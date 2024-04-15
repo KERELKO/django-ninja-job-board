@@ -21,4 +21,6 @@ class IncorrectConverterArgument(ConverterException):
                 + f'Choices are: {self.choices}'
             )
         else:
-            return f'Incorrect passed converter argument, argument: {self.obj}\n'
+            return (
+                f'Incorrect passed converter argument, argument: {self.obj}\n'
+            )
