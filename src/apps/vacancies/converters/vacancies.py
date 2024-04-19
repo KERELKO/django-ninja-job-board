@@ -12,6 +12,11 @@ class ORMVacancyConverter(BaseConverter):
         self,
         obj: VacancyModel | VacancyEntity,
     ) -> VacancyModel | VacancyEntity:
+        '''
+        Handle given object and convert it to needed type
+        Entity -> Model
+        Model -> Entity
+        '''
         if obj.__class__ == VacancyModel:
             return self.convert_to_entity(obj)
         elif obj.__class__ == VacancyEntity:
@@ -23,21 +28,18 @@ class ORMVacancyConverter(BaseConverter):
 
     def convert_to_entity(self, vacancy: VacancyModel) -> VacancyEntity:
         '''Convert Django model into entity'''
+        candidates = vacancy.interested_candidates.all()
         entity = VacancyEntity(
-            # ids
             id=vacancy.id,
             employer=vacancy.employer.to_entity(),
-            interested_candidates=[
-                interested.to_entity() for interested in vacancy.interested_candidates.all()
-            ],
-            # fields
+            interested_candidates=[cand.to_entity() for cand in candidates],
             title=vacancy.title,
             description=vacancy.description,
+            company_name=vacancy.company_name,
             is_remote=vacancy.is_remote,
             required_experience=vacancy.required_experience,
             location=vacancy.location,
             required_skills=vacancy.required_skills,
-            company_name=vacancy.company_name,
             updated_at=vacancy.updated_at,
             created_at=vacancy.created_at,
         )
@@ -50,9 +52,9 @@ class ORMVacancyConverter(BaseConverter):
             employer=entity.employer,
             interested_candidates=entity.interested_candidates,
             title=entity.title,
+            company_name=entity.company_name,
             description=entity.description,
             is_remote=entity.is_remote,
-            company_name=entity.company_name,
             required_experience=entity.required_experience,
             location=entity.location,
             required_skills=entity.required_skills,

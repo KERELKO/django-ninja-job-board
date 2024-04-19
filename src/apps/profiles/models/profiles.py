@@ -82,7 +82,7 @@ class JobSeekerProfile(BaseProfile):
 
 
 class EmployerProfile(BaseProfile):
-    ...
+    company_name = models.CharField(max_length=50)
 
     def to_entity(self) -> EmployerProfileEntity:
         return EmployerProfileEntity(
@@ -90,4 +90,5 @@ class EmployerProfile(BaseProfile):
             email=self.email,
             first_name=self.first_name,
             last_name=self.last_name,
+            company_name=self.company_name,
         )

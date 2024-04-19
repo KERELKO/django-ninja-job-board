@@ -9,9 +9,10 @@ from .v1.profiles.jobseekers.handlers import (
 
 
 api = NinjaAPI()
+
 api.add_router(prefix='/vacancies', router=vacancy_router)
-api.add_router(prefix='/profiles/jobseekers', router=jobseeker_profiler_router)
-api.add_router(prefix='/profiles/employers', router=employer_profiler_router)
+api.add_router(prefix='/jobseekers', router=jobseeker_profiler_router)
+api.add_router(prefix='/employers', router=employer_profiler_router)
 urlpatterns = [
     path('', api.urls),
 ]

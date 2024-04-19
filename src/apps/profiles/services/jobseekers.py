@@ -1,23 +1,17 @@
 from django.db.models import Q
 
 from src.apps.vacancies.models.vacancies import Vacancy
-from src.apps.profiles.converters.profiles.jobseekers import (
-    ORMJobSeekerProfileConverter,
-)
+
 from src.apps.profiles.entities.profiles import (
     JobSeekerProfile as JobSeekerProfileEntity,
 )
 from src.apps.profiles.models.profiles import JobSeekerProfile
 from src.apps.profiles.filters.profiles import ProfileFilters
 
-from src.common.converters.base import BaseConverter
-from src.common.services.base import BaseNotificationService, BaseService
-from src.common.services.notifications import EmailNotificationService
+from .base import BaseJobSeekerProfileService
 
 
-class ORMJobSeekerProfileService(BaseService):
-    converter: BaseConverter = ORMJobSeekerProfileConverter()
-    notification_service: BaseNotificationService = EmailNotificationService()
+class ORMJobSeekerProfileService(BaseJobSeekerProfileService):
 
     def _build_queryset(self, filters: ProfileFilters) -> Q:
         query = Q()
@@ -59,7 +53,8 @@ class ORMJobSeekerProfileService(BaseService):
             'employer'
         ).get(id=vacancy_id)
         vacancy.interested_candidates.add(profile_id)
-        # notifcations
+
+        # Notifications, TODO: to move this code into another place
         subject = f'{vacancy.employer.first_name} {vacancy.employer.last_name}'
         self.notification_service.send_notification(
             subject=subject,

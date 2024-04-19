@@ -12,6 +12,7 @@ class BaseVacancySchema(Schema):
     description: str
     company_name: str
     created_at: datetime
+    salary: int = 0
     required_skills: list[str] = Field(default_factory=list)
     remote: bool | None = None
     location: str | None = None

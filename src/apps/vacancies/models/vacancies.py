@@ -30,11 +30,19 @@ class Vacancy(TimedBaseModel):
     description = models.TextField(
         blank=False
     )
+    salary = models.PositiveIntegerField(
+        default=0,
+        blank=True
+    )
     location = models.CharField(
         max_length=255,
+        default='',
+        blank=True,
     )
     company_name = models.CharField(
         max_length=255,
+        blank=True,
+        default='',
     )
     is_remote = models.BooleanField(
         blank=True,

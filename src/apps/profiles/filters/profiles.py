@@ -6,3 +6,7 @@ class ProfileFilters(BaseModel):
     age__gte: int = 18
     experience__gte: int = 0
     vacancy_id: int = 0
+
+
+class EmployerFilter(BaseModel):
+    ...

@@ -13,9 +13,10 @@ class Vacancy:
     employer: EmployerProfile
     title: str
     description: str
-    company_name: str
-    location: str
     created_at: datetime
+    location: str = ''
+    salary: int = 0
+    company_name: str = ''
     updated_at: datetime | None = None
     is_remote: bool | None = None
     required_experience: int = 0

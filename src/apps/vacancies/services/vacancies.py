@@ -6,18 +6,21 @@ from src.common.services.base import BaseService
 from src.common.converters.base import BaseConverter
 
 from src.apps.vacancies.filters.vacancies import VacancyFilters
-from src.apps.vacancies.converters.vacancies import ORMVacancyConverter
 from src.apps.vacancies.entities.vacancies import Vacancy as VacancyEntity
 from src.apps.vacancies.models.vacancies import Vacancy
 
 
 @dataclass
-class ORMVacancyService(BaseService):
-    converter: BaseConverter = ORMVacancyConverter()
+class BaseVacancyService(BaseService):
+    converter: BaseConverter
+
+
+@dataclass
+class ORMVacancyService(BaseVacancyService):
 
     def _build_queryset(self, filters: VacancyFilters) -> Q:
         query = Q(open=True)
-        if filters.search is not None:
+        if filters.search:
             query &= (
                 Q(title__icontains=filters.search) |
                 Q(description__icontains=filters.search)
@@ -38,6 +41,10 @@ class ORMVacancyService(BaseService):
             query &= Q(location=filters.location)
         if filters.company_name:
             query &= Q(company_name=filters.company_name)
+        if filters.salary__gte:
+            query &= Q(salary__gte=filters.salary__gte)
+        if filters.salary__lte:
+            query &= Q(salary__lte=filters.salary__lte)
         return query
 
     def get_list(
@@ -47,7 +54,7 @@ class ORMVacancyService(BaseService):
         limit: int = 20,
     ) -> list[VacancyEntity]:
         query = self._build_queryset(filters=filters)
-        vacancy_list = Vacancy.objects.filter(query)[offset: offset + limit]
+        vacancy_list = Vacancy.objects.filter(query)[offset:offset + limit]
         return [self.converter.handle(vacancy) for vacancy in vacancy_list]
 
     def get_total_count(self, filters: VacancyFilters) -> int:

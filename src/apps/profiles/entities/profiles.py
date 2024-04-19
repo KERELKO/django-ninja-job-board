@@ -38,6 +38,7 @@ class JobSeekerProfile(BaseProfile):
 
 @dataclass
 class EmployerProfile(BaseProfile):
+    company_name: str
 
     def to_dict(self) -> dict:
         return {
@@ -45,4 +46,5 @@ class EmployerProfile(BaseProfile):
             'first_name': self.first_name,
             'last_name': self.last_name,
             'email': self.email,
+            'company_name': self.company_name,
         }
