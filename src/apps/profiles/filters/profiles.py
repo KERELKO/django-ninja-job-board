@@ -9,4 +9,4 @@ class ProfileFilters(BaseModel):
 
 
 class EmployerFilter(BaseModel):
-    ...
+    company_name: str = ''

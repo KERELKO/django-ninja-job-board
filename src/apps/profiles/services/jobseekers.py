@@ -37,11 +37,11 @@ class ORMJobSeekerProfileService(BaseJobSeekerProfileService):
                 ).get(id=filters.vacancy_id)
             profile_list = vacancy.interested_candidates.filter(
                 query
-            )[offset:offset + limit]
+            )[offset:offset+limit]
         else:
             profile_list = JobSeekerProfile.objects.filter(
                 query
-            )[offset:offset + limit]
+            )[offset:offset+limit]
         return [self.converter.handle(profile) for profile in profile_list]
 
     def get_total_count(self, filters: ProfileFilters) -> int:

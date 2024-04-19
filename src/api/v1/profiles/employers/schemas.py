@@ -1,5 +1,9 @@
 from ninja import Schema
 
+from src.apps.profiles.entities.profiles import (
+    EmployerProfile as EmployerProfileEntity,
+)
+
 
 class BaseEmployerProfileSchema(Schema):
     first_name: str
@@ -10,6 +14,10 @@ class BaseEmployerProfileSchema(Schema):
 
 class EmployerProfileOut(BaseEmployerProfileSchema):
     id: int
+
+    @staticmethod
+    def from_entity(entity: EmployerProfileEntity) -> 'EmployerProfileOut':
+        return EmployerProfileOut(**entity.to_dict())
 
 
 class EmployerProfileIn(BaseEmployerProfileSchema):
