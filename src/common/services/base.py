@@ -24,6 +24,10 @@ class BaseNotificationService(ABC):
         self,
         message: str,
         subject: str,
-        to: Any,
+        to: list[str],
     ) -> None:
         ...
+
+
+class BaseBackgroundTaskService:
+    ...

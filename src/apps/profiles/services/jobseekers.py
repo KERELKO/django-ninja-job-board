@@ -56,7 +56,7 @@ class ORMJobSeekerProfileService(BaseJobSeekerProfileService):
 
         # Notifications, TODO: to move this code into another place
         subject = f'{vacancy.employer.first_name} {vacancy.employer.last_name}'
-        self.notification_service.send_notification(
+        self.task_service.send_notification_task(
             subject=subject,
             message='Someone applied for your vacancy!',
             to=[vacancy.employer.email],

@@ -30,3 +30,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+CELERY_BROKER_URL = 'amqp://message_broker:5672'
+CELERY_RESULT_BACKEND = 'db+postgresql://postgres:postgres@db:5432/postgres'
+CELERY_IMPORTS = ('src.common.services.tasks',)

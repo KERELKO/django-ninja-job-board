@@ -19,6 +19,10 @@ migrations:
 shell:
 	${EXEC} ${APP} ${MANAGE_PY} shell
 
+.PHONY: bash
+bash:
+	${EXEC} ${APP} bash
+
 
 .PHONY: tests
 tests:

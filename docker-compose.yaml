@@ -14,12 +14,31 @@ services:
     ports:
       - "5432:5432"
 
-  # message_broker:
-  #   image: rabbitmq:latest
-  #   volumes:
-  #     - ./data/rabbitmq/:/var/lib/rabbitmq/data
-  #   ports:
-  #     - "5672:5672"
+  message_broker:
+    image: rabbitmq:latest
+    volumes:
+      - ./data/rabbitmq/:/var/lib/rabbitmq/data
+    ports:
+      - "5672:5672"
+
+  worker:
+    build: .
+    command: celery -A src.core worker -l info  # --loglevel=DEBUG
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - DJANGO_SETTINGS_MODULE=src.core.settings.prod
+    volumes:
+      - .:/code/
+    healthcheck:
+      test: ["CMD", "celery", "status"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+    depends_on:
+      - message_broker
+      - db
 
   app:
     build: .
