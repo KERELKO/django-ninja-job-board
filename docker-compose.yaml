@@ -25,9 +25,11 @@ services:
     build: .
     command: celery -A src.core worker -l info  # --loglevel=DEBUG
     environment:
-      - POSTGRES_DB=postgres
+      - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
       - DJANGO_SETTINGS_MODULE=src.core.settings.prod
     volumes:
       - .:/code/

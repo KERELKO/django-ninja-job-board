@@ -2,11 +2,11 @@ from django.http import HttpRequest
 from ninja import Query, Router
 
 from src.apps.profiles.services.base import BaseEmployerProfileService
+from src.apps.profiles.filters.profiles import EmployerFilter
 from src.common.container import Container
+from src.common.filters.pagination import PaginationIn, PaginationOut
 from src.api.schemas import APIResponseSchema, ListPaginatedResponse
 from src.api.v1.profiles.employers.schemas import EmployerProfileOut
-from src.apps.profiles.filters.profiles import EmployerFilter
-from src.common.filters.pagination import PaginationIn, PaginationOut
 
 
 router = Router(tags=['employers'])
@@ -16,7 +16,7 @@ router = Router(tags=['employers'])
     '',
     response=APIResponseSchema[ListPaginatedResponse[EmployerProfileOut]]
 )
-def get_profiles(
+def get_employer_list(
     request: HttpRequest,
     filters: Query[EmployerFilter],
     pagination_in: Query[PaginationIn],

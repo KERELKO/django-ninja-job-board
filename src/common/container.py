@@ -50,13 +50,6 @@ class Container:
             EmailNotificationService
         )
 
-        # Vacancy Service
-        container.register(
-            BaseVacancyService,
-            ORMVacancyService,
-            converter=ORMVacancyConverter()
-        )
-
         # JobSeeker Profile Service
         container.register(
             BaseJobSeekerProfileService,
@@ -70,4 +63,12 @@ class Container:
             ORMEmployerProfileService,
             converter=ORMEmployerProfileConverter(),
         )
+
+        # Vacancy Service
+        container.register(
+            BaseVacancyService,
+            ORMVacancyService,
+            converter=ORMVacancyConverter()
+        )
+
         return container

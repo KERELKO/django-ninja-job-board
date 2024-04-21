@@ -5,7 +5,6 @@ from ..models.vacancies import Vacancy as VacancyModel
 from ..entities.vacancies import Vacancy as VacancyEntity
 
 
-# TODO: reduce hard coding
 class ORMVacancyConverter(BaseConverter):
 
     def handle(

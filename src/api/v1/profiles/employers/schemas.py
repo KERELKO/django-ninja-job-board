@@ -1,4 +1,5 @@
 from ninja import Schema
+from pydantic import ConfigDict
 
 from src.apps.profiles.entities.profiles import (
     EmployerProfile as EmployerProfileEntity,
@@ -25,4 +26,4 @@ class EmployerProfileIn(BaseEmployerProfileSchema):
 
 
 class EmployerProfileUpdate(BaseEmployerProfileSchema):
-    ...
+    model_config = ConfigDict(extra='forbid')

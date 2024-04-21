@@ -89,5 +89,3 @@ EMAIL_FROM = 'kerelkobarabash@gmail.com'
 CELERY_TIMEZONE = 'Europe/Kiev'
 # CELERY_TASK_TRACK_STARTED = True
 # CELERY_TASK_TIME_LIMIT = 30 * 60
-CELERY_BROKER_URL = 'amqp://message_broker:5672'
-CELERY_RESULT_BACKEND = 'db+postgresql://postgres:postgres@db:5432/postgres'

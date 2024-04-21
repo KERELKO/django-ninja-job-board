@@ -2,21 +2,17 @@ from dataclasses import dataclass
 
 from django.db.models import Q
 
-from src.common.services.base import BaseService
-from src.common.converters.base import BaseConverter
-
+from src.apps.profiles.services.base import BaseEmployerProfileService
 from src.apps.vacancies.filters.vacancies import VacancyFilters
 from src.apps.vacancies.entities.vacancies import Vacancy as VacancyEntity
 from src.apps.vacancies.models.vacancies import Vacancy
 
-
-@dataclass
-class BaseVacancyService(BaseService):
-    converter: BaseConverter
+from .base import BaseVacancyService
 
 
 @dataclass
 class ORMVacancyService(BaseVacancyService):
+    employer_service: BaseEmployerProfileService
 
     def _build_queryset(self, filters: VacancyFilters) -> Q:
         query = Q(open=True)
@@ -62,6 +58,31 @@ class ORMVacancyService(BaseVacancyService):
         vacancy_count = Vacancy.available.filter(query).count()
         return vacancy_count
 
-    def get_by_id(self, id: int) -> VacancyEntity:
+    def get(self, id: int) -> VacancyEntity:
         vacancy = Vacancy.objects.get(id=id)
         return self.converter.handle(vacancy)
+
+    def create(self, **vacancy_data) -> VacancyEntity:
+        employer_id = vacancy_data['employer_id']
+        employer_entity = self.employer_service.get(employer_id)
+        employer_model = self.employer_service.converter.handle(
+            employer_entity
+        )
+        new_vacancy = Vacancy.objects.create(
+            employer=employer_model,
+            **vacancy_data,
+        )
+        return self.converter.handle(new_vacancy)
+
+    def update(self, id: int, **vacancy_data) -> VacancyEntity:
+        vacancy = Vacancy.objects.get(id=id)
+        for field_name, field_value in vacancy_data.items():
+            if field_name in ['id', 'employer', 'interested_candidates']:
+                continue
+            setattr(vacancy, field_name, field_value)
+        vacancy.save()
+        return self.converter.handle(vacancy)
+
+    def delete(self, id: int) -> None:
+        vacancy = Vacancy.objects.get(id=id)
+        vacancy.delete()

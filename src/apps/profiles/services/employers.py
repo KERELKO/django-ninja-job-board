@@ -10,7 +10,7 @@ from .base import BaseEmployerProfileService
 
 
 class ORMEmployerProfileService(BaseEmployerProfileService):
-    def _build_queryset(self, filters: EmployerFilter):
+    def _build_queryset(self, filters: EmployerFilter) -> Q:
         query = Q()
         if filters.company_name:
             query &= Q(company_name=filters.company_name)
@@ -24,7 +24,7 @@ class ORMEmployerProfileService(BaseEmployerProfileService):
     ) -> list[EmployerProfileEntity]:
         query = self._build_queryset(filters)
         employers = EmployerProfile.objects.filter(query)[offset:offset+limit]
-        return [employer.to_entity() for employer in employers]
+        return [self.converter.handle(employer) for employer in employers]
 
     def get_total_count(
         self,
@@ -33,3 +33,7 @@ class ORMEmployerProfileService(BaseEmployerProfileService):
         query = self._build_queryset(filters)
         total_count = EmployerProfile.objects.filter(query).count()
         return total_count
+
+    def get(self, id: int) -> EmployerProfileEntity:
+        employer = EmployerProfile.objects.get(id=id)
+        return self.converter.handle(employer)

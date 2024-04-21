@@ -9,14 +9,14 @@ from src.apps.profiles.entities.profiles import (
 
 @dataclass
 class Vacancy:
-    id: int
-    employer: EmployerProfile
     title: str
     description: str
     created_at: datetime
+    id: int | None = None
     location: str = ''
     salary: int = 0
     company_name: str = ''
+    employer: EmployerProfile | None = None
     updated_at: datetime | None = None
     is_remote: bool | None = None
     required_experience: int = 0

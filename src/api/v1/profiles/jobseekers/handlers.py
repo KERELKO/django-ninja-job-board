@@ -1,6 +1,7 @@
 from django.http import HttpRequest
 from ninja import Query, Router
 
+from src.apps.users.services.base import BaseAuthService
 from src.common.container import Container
 from src.common.filters.pagination import PaginationIn, PaginationOut
 from src.apps.profiles.services.base import BaseJobSeekerProfileService
@@ -43,13 +44,34 @@ def get_profile_list(
     return APIResponseSchema(data=profiles_list)
 
 
-# TODO: to add description to this route
-@router.post('/{id}/apply/to/{vacancy_id}')
+@router.post(
+    '/{id}/apply/to/{vacancy_id}',
+    response=APIResponseSchema[dict[str, str]],
+    description='''
+        This handler takes jobseeker profile id as first parameter
+        and vacancy_id as the second,
+        adds the profile to the list of interested candidates for the vacancy,
+        and sends notification to the employer
+    '''
+)
 def apply_to_vacancy(
     request: HttpRequest,
     id: int,
     vacancy_id: int
-) -> dict:
+) -> APIResponseSchema[dict[str, str]]:
     service = Container.resolve(BaseJobSeekerProfileService)
     service.apply_to_vacancy(profile_id=id, vacancy_id=vacancy_id)
-    return {'Status': 'OK'}
+    return APIResponseSchema(data={'Status': 'OK'})
+
+
+# TODO: to make this handler work
+@router.get('/me', response=APIResponseSchema[JobSeekerProfileOut])
+def get_my_profile(
+    request: HttpRequest,
+    jwt: str,
+) -> APIResponseSchema[JobSeekerProfileOut]:
+    auth_service = Container.resolve(BaseAuthService)
+    jobseeker_service = Container.resolve(BaseJobSeekerProfileService)
+    user = auth_service.get_by_jwt(jwt)
+    profile = jobseeker_service.get(id=user.id)
+    return APIResponseSchema(data=JobSeekerProfileOut.from_entity(profile))
