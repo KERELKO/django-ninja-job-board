@@ -1,6 +1,9 @@
 import punq
 
-from src.common.services.tasks import CeleryTaskObserver, celery_email_notification
+from src.common.services.tasks import (
+    CeleryTaskObserver,
+    celery_email_notification,
+)
 from src.apps.profiles.converters.employers import ORMEmployerProfileConverter
 from src.apps.profiles.services.employers import ORMEmployerProfileService
 from src.apps.profiles.services.jobseekers import ORMJobSeekerProfileService
@@ -17,7 +20,10 @@ from src.apps.vacancies.services.vacancies import (
 )
 from src.apps.vacancies.converters.vacancies import ORMVacancyConverter
 
-from src.common.services.base import BaseBackgroundTaskService, BaseNotificationService
+from src.common.services.base import (
+    BaseBackgroundTaskService,
+    BaseNotificationService,
+)
 from src.common.services.notifications import EmailNotificationService
 
 

@@ -1,7 +1,6 @@
 from django.http import HttpRequest
 from ninja import Query, Router
 
-from src.apps.users.services.base import BaseAuthService
 from src.common.container import Container
 from src.common.filters.pagination import PaginationIn, PaginationOut
 from src.apps.profiles.services.base import BaseJobSeekerProfileService
@@ -65,13 +64,8 @@ def apply_to_vacancy(
 
 
 # TODO: to make this handler work
-@router.get('/me', response=APIResponseSchema[JobSeekerProfileOut])
+@router.get('/my', response=APIResponseSchema[JobSeekerProfileOut])
 def get_my_profile(
     request: HttpRequest,
-    jwt: str,
 ) -> APIResponseSchema[JobSeekerProfileOut]:
-    auth_service = Container.resolve(BaseAuthService)
-    jobseeker_service = Container.resolve(BaseJobSeekerProfileService)
-    user = auth_service.get_by_jwt(jwt)
-    profile = jobseeker_service.get(id=user.id)
-    return APIResponseSchema(data=JobSeekerProfileOut.from_entity(profile))
+    ...
