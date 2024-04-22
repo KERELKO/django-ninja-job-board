@@ -1,15 +1,13 @@
 from django.db.models import Q
 
-from src.apps.profiles.entities.profiles import (
-    EmployerProfile as EmployerProfileEntity,
-)
-from src.apps.profiles.models.profiles import EmployerProfile
-from src.apps.profiles.filters.profiles import EmployerFilter
+from src.apps.profiles.entities.employers import EmployerEntity
+from src.apps.profiles.models.employers import EmployerProfile
+from src.apps.profiles.filters import EmployerFilter
 
-from .base import BaseEmployerProfileService
+from .base import BaseEmployerService
 
 
-class ORMEmployerProfileService(BaseEmployerProfileService):
+class ORMEmployerService(BaseEmployerService):
     def _build_queryset(self, filters: EmployerFilter) -> Q:
         query = Q()
         if filters.company_name:
@@ -21,7 +19,7 @@ class ORMEmployerProfileService(BaseEmployerProfileService):
         filters: EmployerFilter,
         offset: int,
         limit: int
-    ) -> list[EmployerProfileEntity]:
+    ) -> list[EmployerEntity]:
         query = self._build_queryset(filters)
         employers = EmployerProfile.objects.filter(query)[offset:offset+limit]
         return [self.converter.handle(employer) for employer in employers]
@@ -29,11 +27,11 @@ class ORMEmployerProfileService(BaseEmployerProfileService):
     def get_total_count(
         self,
         filters: EmployerFilter
-    ) -> list[EmployerProfileEntity]:
+    ) -> list[EmployerEntity]:
         query = self._build_queryset(filters)
         total_count = EmployerProfile.objects.filter(query).count()
         return total_count
 
-    def get(self, id: int) -> EmployerProfileEntity:
+    def get(self, id: int) -> EmployerEntity:
         employer = EmployerProfile.objects.get(id=id)
         return self.converter.handle(employer)

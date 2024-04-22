@@ -1,8 +1,8 @@
 from src.common.converters.base import BaseConverter
 from src.common.converters.exceptions import IncorrectConverterArgument
 
-from ..models.vacancies import Vacancy as VacancyModel
-from ..entities.vacancies import Vacancy as VacancyEntity
+from .models import Vacancy as VacancyModel
+from .entities import VacancyEntity
 
 
 class ORMVacancyConverter(BaseConverter):
@@ -13,8 +13,8 @@ class ORMVacancyConverter(BaseConverter):
     ) -> VacancyModel | VacancyEntity:
         '''
         Handle given object and convert it to needed type
-        Entity -> Model
-        Model -> Entity
+        Entity -> DTO
+        DTO -> Entity
         '''
         if obj.__class__ == VacancyModel:
             return self.convert_to_entity(obj)

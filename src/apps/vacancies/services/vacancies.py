@@ -2,17 +2,17 @@ from dataclasses import dataclass
 
 from django.db.models import Q
 
-from src.apps.profiles.services.base import BaseEmployerProfileService
-from src.apps.vacancies.filters.vacancies import VacancyFilters
-from src.apps.vacancies.entities.vacancies import Vacancy as VacancyEntity
-from src.apps.vacancies.models.vacancies import Vacancy
+from src.apps.profiles.services.base import BaseEmployerService
+from src.apps.vacancies.filters import VacancyFilters
+from src.apps.vacancies.entities import VacancyEntity
+from src.apps.vacancies.models import Vacancy
 
 from .base import BaseVacancyService
 
 
 @dataclass
 class ORMVacancyService(BaseVacancyService):
-    employer_service: BaseEmployerProfileService
+    employer_service: BaseEmployerService
 
     def _build_queryset(self, filters: VacancyFilters) -> Q:
         query = Q(open=True)
@@ -63,10 +63,8 @@ class ORMVacancyService(BaseVacancyService):
         return self.converter.handle(vacancy)
 
     def create(self, **vacancy_data) -> VacancyEntity:
-        employer_id = vacancy_data['employer_id']
-        employer_entity = self.employer_service.get(employer_id)
         employer_model = self.employer_service.converter.handle(
-            employer_entity
+            vacancy_data.pop('employer')
         )
         new_vacancy = Vacancy.objects.create(
             employer=employer_model,
@@ -74,15 +72,5 @@ class ORMVacancyService(BaseVacancyService):
         )
         return self.converter.handle(new_vacancy)
 
-    def update(self, id: int, **vacancy_data) -> VacancyEntity:
-        vacancy = Vacancy.objects.get(id=id)
-        for field_name, field_value in vacancy_data.items():
-            if field_name in ['id', 'employer', 'interested_candidates']:
-                continue
-            setattr(vacancy, field_name, field_value)
-        vacancy.save()
-        return self.converter.handle(vacancy)
-
-    def delete(self, id: int) -> None:
-        vacancy = Vacancy.objects.get(id=id)
-        vacancy.delete()
+    def add_candidate(self, vacancy_id: int, candidate_id: int) -> None:
+        ...

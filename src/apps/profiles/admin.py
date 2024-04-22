@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models.profiles import JobSeekerProfile, EmployerProfile
+from .models.jobseekers import JobSeekerProfile
+from .models.employers import EmployerProfile
 
 
 @admin.register(JobSeekerProfile)

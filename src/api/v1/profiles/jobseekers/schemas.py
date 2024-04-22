@@ -1,11 +1,9 @@
 from ninja import Schema
 
-from src.apps.profiles.entities.profiles import (
-    JobSeekerProfile as JobSeekerProfileEntity,
-)
+from src.apps.profiles.entities.jobseekers import JobSeekerEntity
 
 
-class BaseJobSeekerSchema(Schema):
+class BaseJobSeekerProfileSchema(Schema):
     first_name: str
     last_name: str
     age: int
@@ -15,17 +13,17 @@ class BaseJobSeekerSchema(Schema):
     skills: list[str]
 
 
-class JobSeekerProfileIn(BaseJobSeekerSchema):
+class JobSeekerProfileIn(BaseJobSeekerProfileSchema):
     user_id: int
 
 
-class JobSeekerProfileUpdate(BaseJobSeekerSchema):
+class JobSeekerProfileUpdate(BaseJobSeekerProfileSchema):
     ...
 
 
-class JobSeekerProfileOut(BaseJobSeekerSchema):
+class JobSeekerProfileOut(BaseJobSeekerProfileSchema):
     id: int
 
     @staticmethod
-    def from_entity(entity: JobSeekerProfileEntity) -> 'JobSeekerProfileOut':
+    def from_entity(entity: JobSeekerEntity) -> 'JobSeekerProfileOut':
         return JobSeekerProfileOut(**entity.to_dict())

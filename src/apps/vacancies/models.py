@@ -2,7 +2,8 @@ from django.db import models
 from django.utils.text import slugify
 from django.contrib.postgres.fields import ArrayField
 
-from src.apps.profiles.models.profiles import EmployerProfile, JobSeekerProfile
+from src.apps.profiles.models.jobseekers import JobSeekerProfile
+from src.apps.profiles.models.employers import EmployerProfile
 from src.common.models.base import TimedBaseModel
 
 

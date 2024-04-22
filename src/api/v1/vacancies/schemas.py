@@ -3,7 +3,7 @@ from datetime import datetime
 from ninja import Field, Schema
 from pydantic import ConfigDict
 
-from src.apps.vacancies.entities.vacancies import Vacancy as VacancyEntity
+from src.apps.vacancies.entities import VacancyEntity
 from src.api.v1.profiles.jobseekers.schemas import JobSeekerProfileOut
 from src.api.v1.profiles.employers.schemas import EmployerProfileOut
 

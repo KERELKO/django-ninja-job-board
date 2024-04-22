@@ -1,9 +1,7 @@
 from ninja import Schema
 from pydantic import ConfigDict
 
-from src.apps.profiles.entities.profiles import (
-    EmployerProfile as EmployerProfileEntity,
-)
+from src.apps.profiles.entities.employers import EmployerEntity
 
 
 class BaseEmployerProfileSchema(Schema):
@@ -17,7 +15,7 @@ class EmployerProfileOut(BaseEmployerProfileSchema):
     id: int
 
     @staticmethod
-    def from_entity(entity: EmployerProfileEntity) -> 'EmployerProfileOut':
+    def from_entity(entity: EmployerEntity) -> 'EmployerProfileOut':
         return EmployerProfileOut(**entity.to_dict())
 
 

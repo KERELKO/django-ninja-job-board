@@ -1,14 +1,12 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from src.apps.profiles.entities.profiles import (
-    JobSeekerProfile,
-    EmployerProfile,
-)
+from src.apps.profiles.entities.employers import EmployerEntity
+from src.apps.profiles.entities.jobseekers import JobSeekerEntity
 
 
 @dataclass
-class Vacancy:
+class VacancyEntity:
     title: str
     description: str
     created_at: datetime
@@ -16,11 +14,11 @@ class Vacancy:
     location: str = ''
     salary: int = 0
     company_name: str = ''
-    employer: EmployerProfile | None = None
+    employer: EmployerEntity | None = None
     updated_at: datetime | None = None
     is_remote: bool | None = None
     required_experience: int = 0
-    interested_candidates: list[JobSeekerProfile] = field(default_factory=list)
+    interested_candidates: list[JobSeekerEntity] = field(default_factory=list)
     required_skills: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict:

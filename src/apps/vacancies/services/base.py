@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from src.common.converters.base import BaseConverter
-from src.apps.vacancies.entities.vacancies import Vacancy as VacancyEntity
-from src.apps.vacancies.filters.vacancies import VacancyFilters
+from src.apps.vacancies.entities import VacancyEntity
+from src.apps.vacancies.filters import VacancyFilters
 
 
 @dataclass
@@ -21,4 +21,16 @@ class BaseVacancyService(ABC):
 
     @abstractmethod
     def get_total_count(self, filters) -> int:
+        ...
+
+    @abstractmethod
+    def get(self, id: int) -> VacancyEntity:
+        ...
+
+    @abstractmethod
+    def create(self, **vacancy_data) -> VacancyEntity:
+        ...
+
+    @abstractmethod
+    def add_candidate(self, candidate_id: int) -> None:
         ...

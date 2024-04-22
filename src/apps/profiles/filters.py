@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
 
-class ProfileFilters(BaseModel):
+class JobSeekerFilters(BaseModel):
     skills: list[str] = Field(default_factory=list)
     age__gte: int = 18
     experience__gte: int = 0

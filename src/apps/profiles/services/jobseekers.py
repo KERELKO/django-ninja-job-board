@@ -1,19 +1,17 @@
 from django.db.models import Q
 
-from src.apps.vacancies.models.vacancies import Vacancy
+from src.apps.vacancies.models import Vacancy
 
-from src.apps.profiles.entities.profiles import (
-    JobSeekerProfile as JobSeekerProfileEntity,
-)
-from src.apps.profiles.models.profiles import JobSeekerProfile
-from src.apps.profiles.filters.profiles import ProfileFilters
+from src.apps.profiles.entities.jobseekers import JobSeekerEntity
+from src.apps.profiles.models.jobseekers import JobSeekerProfile
+from src.apps.profiles.filters import JobSeekerFilters
 
-from .base import BaseJobSeekerProfileService
+from .base import BaseJobSeekerService
 
 
-class ORMJobSeekerProfileService(BaseJobSeekerProfileService):
+class ORMJobSeekerService(BaseJobSeekerService):
 
-    def _build_queryset(self, filters: ProfileFilters) -> Q:
+    def _build_queryset(self, filters: JobSeekerFilters) -> Q:
         query = Q()
         if filters.age__gte:
             query &= Q(age__gte=filters.age__gte)
@@ -26,10 +24,10 @@ class ORMJobSeekerProfileService(BaseJobSeekerProfileService):
 
     def get_list(
         self,
-        filters: ProfileFilters,
+        filters: JobSeekerFilters,
         offset: int = 0,
         limit: int = 20
-    ) -> list[JobSeekerProfileEntity]:
+    ) -> list[JobSeekerEntity]:
         query = self._build_queryset(filters=filters)
         if filters.vacancy_id:
             vacancy = Vacancy.objects.prefetch_related(
@@ -44,20 +42,10 @@ class ORMJobSeekerProfileService(BaseJobSeekerProfileService):
             )[offset:offset+limit]
         return [self.converter.handle(profile) for profile in profile_list]
 
-    def get_total_count(self, filters: ProfileFilters) -> int:
+    def get(self, id: int) -> JobSeekerEntity:
+        profile = JobSeekerProfile.objects.get(id=id)
+        return self.converter.handle(profile)
+
+    def get_total_count(self, filters: JobSeekerFilters) -> int:
         query = self._build_queryset(filters)
         return JobSeekerProfile.objects.filter(query).count()
-
-    def apply_to_vacancy(self, profile_id: int, vacancy_id: int) -> None:
-        vacancy = Vacancy.objects.select_related(
-            'employer'
-        ).get(id=vacancy_id)
-        vacancy.interested_candidates.add(profile_id)
-
-        # Notifications, TODO: to move this code into another place
-        subject = f'{vacancy.employer.first_name} {vacancy.employer.last_name}'
-        self.task_service.send_notification_task(
-            subject=subject,
-            message='Someone applied for your vacancy!',
-            to=[vacancy.employer.email],
-        )

@@ -3,8 +3,8 @@ from ninja import Query, Router
 
 from src.common.container import Container
 from src.common.filters.pagination import PaginationIn, PaginationOut
-from src.apps.profiles.services.base import BaseJobSeekerProfileService
-from src.apps.profiles.filters.profiles import ProfileFilters
+from src.apps.profiles.services.base import BaseJobSeekerService
+from src.apps.profiles.filters import JobSeekerFilters
 from src.api.schemas import APIResponseSchema, ListPaginatedResponse
 
 from .schemas import JobSeekerProfileOut
@@ -20,9 +20,9 @@ router = Router(tags=['jobseekers'])
 def get_profile_list(
     request: HttpRequest,
     pagination_in: Query[PaginationIn],
-    filters: Query[ProfileFilters],
+    filters: Query[JobSeekerFilters],
 ) -> APIResponseSchema[ListPaginatedResponse[JobSeekerProfileOut]]:
-    service = Container.resolve(BaseJobSeekerProfileService)
+    service = Container.resolve(BaseJobSeekerService)
     profile_entities = service.get_list(
         filters=filters,
         offset=pagination_in.offset,
@@ -58,7 +58,7 @@ def apply_to_vacancy(
     id: int,
     vacancy_id: int
 ) -> APIResponseSchema[dict[str, str]]:
-    service = Container.resolve(BaseJobSeekerProfileService)
+    service = Container.resolve(BaseJobSeekerService)
     service.apply_to_vacancy(profile_id=id, vacancy_id=vacancy_id)
     return APIResponseSchema(data={'Status': 'OK'})
 

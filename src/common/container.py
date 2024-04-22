@@ -4,21 +4,21 @@ from src.common.services.tasks import (
     CeleryTaskObserver,
     celery_email_notification,
 )
-from src.apps.profiles.converters.employers import ORMEmployerProfileConverter
-from src.apps.profiles.services.employers import ORMEmployerProfileService
-from src.apps.profiles.services.jobseekers import ORMJobSeekerProfileService
+from src.apps.profiles.converters.employers import ORMEmployerConverter
+from src.apps.profiles.services.employers import ORMEmployerService
+from src.apps.profiles.services.jobseekers import ORMJobSeekerService
 from src.apps.profiles.converters.jobseekers import (
-    ORMJobSeekerProfileConverter,
+    ORMJobSeekerConverter,
 )
 from src.apps.profiles.services.base import (
-    BaseEmployerProfileService,
-    BaseJobSeekerProfileService,
+    BaseEmployerService,
+    BaseJobSeekerService,
 )
 from src.apps.vacancies.services.vacancies import (
     BaseVacancyService,
     ORMVacancyService,
 )
-from src.apps.vacancies.converters.vacancies import ORMVacancyConverter
+from src.apps.vacancies.converters import ORMVacancyConverter
 
 from src.common.services.base import (
     BaseBackgroundTaskService,
@@ -58,16 +58,16 @@ class Container:
 
         # JobSeeker Profile Service
         container.register(
-            BaseJobSeekerProfileService,
-            ORMJobSeekerProfileService,
-            converter=ORMJobSeekerProfileConverter(),
+            BaseJobSeekerService,
+            ORMJobSeekerService,
+            converter=ORMJobSeekerConverter(),
         )
 
         # Employer Profile Service
         container.register(
-            BaseEmployerProfileService,
-            ORMEmployerProfileService,
-            converter=ORMEmployerProfileConverter(),
+            BaseEmployerService,
+            ORMEmployerService,
+            converter=ORMEmployerConverter(),
         )
 
         # Vacancy Service

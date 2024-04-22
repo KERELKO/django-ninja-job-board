@@ -1,8 +1,8 @@
 from django.http import HttpRequest
 from ninja import Query, Router
 
-from src.apps.profiles.services.base import BaseEmployerProfileService
-from src.apps.profiles.filters.profiles import EmployerFilter
+from src.apps.profiles.services.base import BaseEmployerService
+from src.apps.profiles.filters import EmployerFilter
 from src.common.container import Container
 from src.common.filters.pagination import PaginationIn, PaginationOut
 from src.api.schemas import APIResponseSchema, ListPaginatedResponse
@@ -21,7 +21,7 @@ def get_employer_list(
     filters: Query[EmployerFilter],
     pagination_in: Query[PaginationIn],
 ) -> APIResponseSchema[ListPaginatedResponse[EmployerProfileOut]]:
-    service = Container.resolve(BaseEmployerProfileService)
+    service = Container.resolve(BaseEmployerService)
     profile_list = service.get_list(
         filters=filters,
         offset=pagination_in.offset,

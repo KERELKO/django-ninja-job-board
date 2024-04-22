@@ -1,33 +1,31 @@
 from src.common.converters.exceptions import IncorrectConverterArgument
-from src.apps.profiles.entities.profiles import (
-    EmployerProfile as EmployerProfileEntity,
-)
-from src.apps.profiles.models.profiles import (
-    EmployerProfile as EmployerProfileModel,
-)
+from src.apps.profiles.entities.employers import EmployerEntity
+
+from src.apps.profiles.models.employers import EmployerProfile
+
 from src.common.converters.base import BaseConverter
 
 
-class ORMEmployerProfileConverter(BaseConverter):
+class ORMEmployerConverter(BaseConverter):
     def handle(
         self,
-        obj: EmployerProfileModel | EmployerProfileEntity,
-    ) -> EmployerProfileModel | EmployerProfileEntity:
-        if obj.__class__ == EmployerProfileEntity:
+        obj: EmployerProfile | EmployerEntity,
+    ) -> EmployerProfile | EmployerEntity:
+        if obj.__class__ == EmployerEntity:
             return self.convert_to_model(obj)
-        elif obj.__class__ == EmployerProfileModel:
+        elif obj.__class__ == EmployerProfile:
             return self.convert_to_entity(obj)
         else:
             raise IncorrectConverterArgument(
                 obj,
-                choices=[EmployerProfileModel, EmployerProfileEntity],
+                choices=[EmployerProfile, EmployerEntity],
             )
 
     def convert_to_entity(
         self,
-        model: EmployerProfileModel,
-    ) -> EmployerProfileEntity:
-        return EmployerProfileEntity(
+        model: EmployerProfile,
+    ) -> EmployerEntity:
+        return EmployerEntity(
             id=model.id,
             first_name=model.first_name,
             last_name=model.last_name,
@@ -37,9 +35,9 @@ class ORMEmployerProfileConverter(BaseConverter):
 
     def convert_to_model(
         self,
-        entity: EmployerProfileEntity,
-    ) -> EmployerProfileModel:
-        return EmployerProfileModel(
+        entity: EmployerEntity,
+    ) -> EmployerProfile:
+        return EmployerProfile(
             id=entity.id,
             first_name=entity.first_name,
             last_name=entity.last_name,

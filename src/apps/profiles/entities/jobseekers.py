@@ -1,21 +1,10 @@
-from abc import abstractmethod
 from dataclasses import dataclass, field
 
-
-@dataclass
-class BaseProfile:
-    id: int
-    first_name: str
-    last_name: str
-    email: str
-
-    @abstractmethod
-    def to_dict(self) -> dict:
-        ...
+from .base import BaseProfileEntity
 
 
 @dataclass
-class JobSeekerProfile(BaseProfile):
+class JobSeekerEntity(BaseProfileEntity):
     age: int
     phone: str
     about_me: str
@@ -33,18 +22,4 @@ class JobSeekerProfile(BaseProfile):
             'about_me': self.about_me,
             'experience': self.experience,
             'skills': self.skills,
-        }
-
-
-@dataclass
-class EmployerProfile(BaseProfile):
-    company_name: str
-
-    def to_dict(self) -> dict:
-        return {
-            'id': self.id,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'email': self.email,
-            'company_name': self.company_name,
         }
