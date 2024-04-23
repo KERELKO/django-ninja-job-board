@@ -6,6 +6,7 @@ class JobSeekerFilters(BaseModel):
     age__gte: int = 18
     experience__gte: int = 0
     vacancy_id: int = 0
+    allow_notifications: bool = False
 
 
 class EmployerFilter(BaseModel):

@@ -35,6 +35,7 @@ class ORMJobSeekerConverter(BaseConverter):
             skills=profile.skills,
             phone=profile.phone,
             about_me=profile.about_me,
+            allow_notifications=profile.allow_notifications,
         )
 
     def convert_to_model(
@@ -51,4 +52,5 @@ class ORMJobSeekerConverter(BaseConverter):
             skills=profile.skills,
             phone=profile.phone,
             about_me=profile.about_me,
+            allow_notifications=profile.allow_notifications,
         )

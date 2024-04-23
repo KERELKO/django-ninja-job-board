@@ -1,6 +1,7 @@
 from django.http import HttpRequest
 from ninja import Router, Query
 
+from src.apps.vacancies.use_cases.vacancies import CreateVacancyUseCase
 from src.common.container import Container
 from src.apps.vacancies.filters import VacancyFilters
 from src.apps.vacancies.services.vacancies import BaseVacancyService
@@ -52,6 +53,11 @@ def create_vacancy(
     request: HttpRequest,
     vacancy_data: VacancyIn,
 ) -> APIResponseSchema[VacancyOut]:
-    service = Container.resolve(BaseVacancyService)
-    vacancy_entity = service.create(**vacancy_data.model_dump())
+    usecase = Container.resolve(CreateVacancyUseCase)
+    data = vacancy_data.model_dump()
+    employer_id = data.pop('employer_id')
+    vacancy_entity = usecase.execute(
+        employer_id=employer_id,
+        **data,
+    )
     return APIResponseSchema(data=VacancyOut(**vacancy_entity.to_dict()))

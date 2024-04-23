@@ -10,6 +10,7 @@ class JobSeekerEntity(BaseProfileEntity):
     about_me: str
     experience: int
     skills: list[str] = field(default_factory=list)
+    allow_notifications: bool = False
 
     def to_dict(self) -> dict:
         return {
@@ -22,4 +23,5 @@ class JobSeekerEntity(BaseProfileEntity):
             'about_me': self.about_me,
             'experience': self.experience,
             'skills': self.skills,
+            'allow_notifications': self.allow_notifications,
         }

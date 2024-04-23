@@ -1,3 +1,4 @@
+from typing import Iterable
 from django.db.models import Q
 
 from src.apps.profiles.entities.employers import EmployerEntity
@@ -31,6 +32,11 @@ class ORMEmployerService(BaseEmployerService):
         query = self._build_queryset(filters)
         total_count = EmployerProfile.objects.filter(query).count()
         return total_count
+
+    def get_all(self, filters: EmployerFilter) -> Iterable[EmployerEntity]:
+        query = self._build_queryset(filters)
+        for employer in EmployerProfile.objects.filter(query):
+            yield employer
 
     def get(self, id: int) -> EmployerEntity:
         employer = EmployerProfile.objects.get(id=id)

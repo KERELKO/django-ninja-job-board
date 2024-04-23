@@ -1,4 +1,4 @@
-from django.core.mail import send_mail
+from django.core.mail import send_mail, send_mass_mail
 
 from django.conf import settings
 
@@ -20,3 +20,12 @@ class EmailNotificationService(BaseNotificationService):
             recipient_list=to,
             fail_silently=False,
         )
+
+    def send_notification_group(
+        self,
+        message: str,
+        to: list[str],
+        subjects: list[str],
+        from_email: str = settings.EMAIL_FROM,
+    ) -> None:
+        ...

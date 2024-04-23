@@ -1,8 +1,10 @@
 from dataclasses import dataclass
+from typing import Iterable
 
 from django.db.models import Q
 
-from src.apps.profiles.services.base import BaseEmployerService
+from src.apps.profiles.models.employers import EmployerProfile
+from src.apps.profiles.models.jobseekers import JobSeekerProfile
 from src.apps.vacancies.filters import VacancyFilters
 from src.apps.vacancies.entities import VacancyEntity
 from src.apps.vacancies.models import Vacancy
@@ -12,7 +14,6 @@ from .base import BaseVacancyService
 
 @dataclass
 class ORMVacancyService(BaseVacancyService):
-    employer_service: BaseEmployerService
 
     def _build_queryset(self, filters: VacancyFilters) -> Q:
         query = Q(open=True)
@@ -62,15 +63,24 @@ class ORMVacancyService(BaseVacancyService):
         vacancy = Vacancy.objects.get(id=id)
         return self.converter.handle(vacancy)
 
-    def create(self, **vacancy_data) -> VacancyEntity:
-        employer_model = self.employer_service.converter.handle(
-            vacancy_data.pop('employer')
-        )
+    def get_all(self, filters: VacancyFilters) -> Iterable[VacancyEntity]:
+        query = self._build_queryset(filters=filters)
+        for vacancy in Vacancy.objects.filter(query):
+            yield vacancy
+
+    def create(
+        self,
+        employer_id: int,
+        **vacancy_data,
+    ) -> VacancyEntity:
+        employer = EmployerProfile.objects.get(id=employer_id)
         new_vacancy = Vacancy.objects.create(
-            employer=employer_model,
+            employer=employer,
             **vacancy_data,
         )
         return self.converter.handle(new_vacancy)
 
     def add_candidate(self, vacancy_id: int, candidate_id: int) -> None:
-        ...
+        candidate = JobSeekerProfile.objects.get(id=candidate_id)
+        vacancy = Vacancy.objects.get(id=vacancy_id)
+        vacancy.interested_candidates.add(candidate.id)

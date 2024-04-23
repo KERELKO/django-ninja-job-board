@@ -27,6 +27,9 @@ class JobSeekerProfile(BaseProfile):
         blank=False,
     )
 
+    # Other fields
+    allow_notifications = models.BooleanField(default=False)
+
     class Meta:
         ordering = ('-first_name',)
 

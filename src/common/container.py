@@ -1,5 +1,13 @@
 import punq
 
+from src.apps.vacancies.use_cases.vacancies import (
+    CreateVacancyUseCase,
+    FilterCandidatesInVacancyUseCase,
+)
+from src.apps.profiles.use_cases.jobseekers import (
+    ApplyToVacancyUseCase,
+    UpdateJobSeekerProfileUseCase,
+)
 from src.common.services.tasks import (
     CeleryTaskObserver,
     celery_email_notification,
@@ -76,5 +84,9 @@ class Container:
             ORMVacancyService,
             converter=ORMVacancyConverter()
         )
-
+        # Use Cases
+        container.register(CreateVacancyUseCase)
+        container.register(ApplyToVacancyUseCase)
+        container.register(FilterCandidatesInVacancyUseCase)
+        container.register(UpdateJobSeekerProfileUseCase)
         return container

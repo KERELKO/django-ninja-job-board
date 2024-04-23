@@ -1,13 +1,18 @@
 from django.http import HttpRequest
 from ninja import Query, Router
+from ninja.security import django_auth
 
+from src.apps.profiles.use_cases.jobseekers import (
+    ApplyToVacancyUseCase,
+    UpdateJobSeekerProfileUseCase,
+)
 from src.common.container import Container
 from src.common.filters.pagination import PaginationIn, PaginationOut
 from src.apps.profiles.services.base import BaseJobSeekerService
 from src.apps.profiles.filters import JobSeekerFilters
 from src.api.schemas import APIResponseSchema, ListPaginatedResponse
 
-from .schemas import JobSeekerProfileOut
+from .schemas import JobSeekerProfileOut, JobSeekerProfileUpdate
 
 
 router = Router(tags=['jobseekers'])
@@ -58,14 +63,36 @@ def apply_to_vacancy(
     id: int,
     vacancy_id: int
 ) -> APIResponseSchema[dict[str, str]]:
-    service = Container.resolve(BaseJobSeekerService)
-    service.apply_to_vacancy(profile_id=id, vacancy_id=vacancy_id)
+    use_case = Container.resolve(ApplyToVacancyUseCase)
+    use_case.execute(candidate_id=id, vacancy_id=vacancy_id)
     return APIResponseSchema(data={'Status': 'OK'})
 
 
 # TODO: to make this handler work
-@router.get('/my', response=APIResponseSchema[JobSeekerProfileOut])
+@router.get(
+    '/me',
+    response=APIResponseSchema[JobSeekerProfileOut],
+    auth=django_auth,
+)
 def get_my_profile(
     request: HttpRequest,
 ) -> APIResponseSchema[JobSeekerProfileOut]:
-    ...
+    service = Container.resolve(BaseJobSeekerService)
+    print(request.user.id)
+    profile = service.get_by_user_id(user_id=request.user.id)
+    return APIResponseSchema(data=JobSeekerProfileOut.from_entity(profile))
+
+
+@router.patch('/{id}', response=APIResponseSchema[JobSeekerProfileOut])
+def update_profile(
+    request: HttpRequest,
+    id: int,
+    profile: Query[JobSeekerProfileUpdate],
+) -> APIResponseSchema[JobSeekerProfileOut]:
+    use_case = Container.resolve(UpdateJobSeekerProfileUseCase)
+    if not profile.skills:
+        profile.skills = None
+    updated_profile = use_case.execute(id, **profile.model_dump())
+    return APIResponseSchema(
+        data=JobSeekerProfileOut.from_entity(updated_profile)
+    )
