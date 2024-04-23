@@ -29,6 +29,7 @@ Once the application is running, you can access the job board features through t
 If you'd like to contribute to this project, feel free to fork the repository and submit a pull request. Please follow the existing code style and ensure that all tests pass before submitting your changes.
 
 ## Project structure
+**Every package has init file**
 ```
 ├── docker-compose.yaml
 ├── Dockerfile
@@ -39,98 +40,89 @@ If you'd like to contribute to this project, feel free to fork the repository an
 ├── README.md
 ├── src
 │   ├── api
-│   │   ├── __init__.py
 │   │   ├── schemas.py
 │   │   ├── urls.py
 │   │   └── v1
-│   │       ├── __init__.py
 │   │       ├── profiles
 │   │       │   ├── employers
-│   │       │   ├── __init__.py
+│   │       │   │   ├── handlers.py
+│   │       │   │   └── schemas.py
 │   │       │   └── jobseekers
-│   │       ├── users
+│   │       │       ├── handlers.py
+│   │       │       └── schemas.py
 │   │       └── vacancies
 │   │           ├── handlers.py
-│   │           ├── __init__.py
 │   │           └── schemas.py
 │   ├── apps
-│   │   ├── __init__.py
 │   │   ├── profiles
 │   │   │   ├── admin.py
 │   │   │   ├── apps.py
 │   │   │   ├── converters
-│   │   │   │   ├── __init__.py
-│   │   │   │   └── profiles
+│   │   │   │   ├── employers.py
+│   │   │   │   └── jobseekers.py
 │   │   │   ├── entities
-│   │   │   │   └── profiles.py
-│   │   │   ├── filters
-│   │   │   │   ├── __init__.py
-│   │   │   │   └── profiles.py
-│   │   │   ├── __init__.py
+│   │   │   │   ├── base.py
+│   │   │   │   ├── employers.py
+│   │   │   │   └── jobseekers.py
+│   │   │   ├── filters.py
 │   │   │   ├── models
-│   │   │   │   ├── __init__.py
-│   │   │   │   └── profiles.py
+│   │   │   │   ├── base.py
+│   │   │   │   ├── employers.py
+│   │   │   │   └── jobseekers.py
 │   │   │   └── services
-│   │   │       ├── __init__.py
-│   │   │       └── profiles.py
+│   │   │       ├── base.py
+│   │   │       ├── employers.py
+│   │   │       └── jobseekers.py
 │   │   ├── users
 │   │   │   ├── admin.py
 │   │   │   ├── apps.py
 │   │   │   ├── entities.py
-│   │   │   ├── __init__.py
-│   │   │   └── models.py
+│   │   │   ├── exceptions.py
+│   │   │   ├── models.py
+│   │   │   └── services
+│   │   │       └── user.py
 │   │   └── vacancies
 │   │       ├── admin.py
 │   │       ├── apps.py
-│   │       ├── converters
-│   │       │   ├── __init__.py
+│   │       ├── converters.py
+│   │       ├── entities.py
+│   │       ├── filters.py
+│   │       ├── models.py
+│   │       ├── services
+│   │       │   ├── base.py
 │   │       │   └── vacancies.py
-│   │       ├── entities
-│   │       │   ├── __init__.py
-│   │       │   └── vacancies.py
-│   │       ├── filters
-│   │       │   ├── __init__.py
-│   │       │   └── vacancies.py
-│   │       ├── __init__.py
-│   │       ├── models
-│   │       │   ├── __init__.py
-│   │       │   └── vacancies.py
-│   │       └── services
-│   │           ├── __init__.py
+│   │       └── use_cases
+│   │           ├── base.py
 │   │           └── vacancies.py
 │   ├── common
+│   │   ├── container.py
 │   │   ├── converters
 │   │   │   ├── base.py
-│   │   │   ├── exceptions.py
-│   │   │   └── __init__.py
+│   │   │   └── exceptions.py
 │   │   ├── filters
 │   │   │   └── pagination.py
-│   │   ├── __init__.py
 │   │   ├── models
-│   │   │   ├── base.py
-│   │   │   └── __init__.py
+│   │   │   └── base.py
 │   │   ├── services
 │   │   │   ├── base.py
-│   │   │   ├── __init__.py
-│   │   │   └── notifications.py
+│   │   │   ├── notifications.py
+│   │   │   └── tasks.py
+│   │   ├── use_cases
+│   │   │   └── base.py
 │   │   └── utils
-│   │       ├── __init__.py
 │   │       └── time.py
-│   ├── core
-│   │   ├── asgi.py
-│   │   ├── __init__.py
-│   │   ├── settings
-│   │   │   ├── base.py
-│   │   │   ├── __init__.py
-│   │   │   ├── local.py
-│   │   │   └── prod.py
-│   │   ├── urls.py
-│   │   └── wsgi.py
-│   └── db.sqlite3
+│   └── core
+│       ├── asgi.py
+│       ├── celery.py
+│       ├── settings
+│       │   ├── base.py
+│       │   ├── local.py
+│       │   └── prod.py
+│       ├── urls.py
+│       └── wsgi.py
 └── tests
-    ├── __init__.py
     └── services
         ├── conftest.py
-        ├── __init__.py
         └── test_vacancies.py
+
 ```
