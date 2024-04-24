@@ -7,7 +7,6 @@ from src.apps.profiles.entities.jobseekers import JobSeekerEntity
 from .base import BaseProfile
 
 
-# TODO: add notification field
 class JobSeekerProfile(BaseProfile):
     phone = models.CharField(
         max_length=25,

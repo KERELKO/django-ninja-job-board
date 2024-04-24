@@ -55,7 +55,7 @@ class Container:
         # Notifiction Service
         container.register(
             BaseNotificationService,
-            EmailNotificationService
+            EmailNotificationService,
         )
 
         # JobSeeker Profile Service

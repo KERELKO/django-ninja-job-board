@@ -23,7 +23,6 @@ class CeleryTaskService(BaseBackgroundTaskService):
         subject: str,
         object: T,
     ) -> None:
-        print(object.__class__.__name__)
         self.celery_notification_task.delay(
             message=message,
             object_id=object.id,
@@ -39,6 +38,6 @@ class CeleryTaskService(BaseBackgroundTaskService):
         first = next(objects)
         self.celery_notification_group_task.delay(
             message=message,
-            objects_ids=[first.id]+[o.id for o in objects],
+            object_ids=[first.id]+[o.id for o in objects],
             model_type=first.__class__.__name__,
         )

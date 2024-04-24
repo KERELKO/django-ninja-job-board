@@ -45,7 +45,7 @@ class PhoneNotificationService(BaseNotificationService):
         subject: str,
         object: ET,
     ) -> None:
-        print(f'{message} sent object {subject} with phone {object.phone}')
+        print(f'{subject} with phone {object.phone} got a message:\n{message}')
 
     def send_notification_group(
         self,
@@ -53,11 +53,11 @@ class PhoneNotificationService(BaseNotificationService):
         objects: list[ET],
     ) -> None:
         for obj in objects:
-            print(f'{message} object object with phone {obj.phone} is sent')
+            print(f'{obj} with phone {obj.phone} got a message:\n{message}')
 
 
 @dataclass
-class NotificationComposerService(BaseNotificationService):
+class ComposedNotificationService(BaseNotificationService):
     notification_services: list[BaseNotificationService]
 
     def send_notification(

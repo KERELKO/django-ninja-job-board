@@ -11,16 +11,16 @@ T = TypeVar('T')
 
 def get_orm_models(
     model_type: str,
-    objects_ids: list[int],
+    list_ids: list[int],
     first: bool = False,
 ) -> Iterable[T] | T:
     '''
     Returns a list of Django orm models or a single object if first=True
     '''
     if model_type in [JobSeekerProfile.__name__, JobSeekerEntity.__name__]:
-        objects = JobSeekerProfile.objects.filter(id__in=objects_ids)
+        objects = JobSeekerProfile.objects.filter(id__in=list_ids)
     elif model_type in [EmployerProfile.__name__, EmployerEntity.__name__]:
-        objects = EmployerProfile.objects.filter(id__in=objects_ids)
+        objects = EmployerProfile.objects.filter(id__in=list_ids)
     else:
         raise ValueError('Invalid model type', model_type)
     if first:

@@ -68,7 +68,6 @@ def apply_to_vacancy(
     return APIResponseSchema(data={'Status': 'OK'})
 
 
-# TODO: to make this handler work
 @router.get(
     '/me',
     response=APIResponseSchema[JobSeekerProfileOut],
@@ -78,7 +77,6 @@ def get_my_profile(
     request: HttpRequest,
 ) -> APIResponseSchema[JobSeekerProfileOut]:
     service = Container.resolve(BaseJobSeekerService)
-    print(request.user.id)
     profile = service.get_by_user_id(user_id=request.user.id)
     return APIResponseSchema(data=JobSeekerProfileOut.from_entity(profile))
 
