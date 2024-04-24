@@ -13,7 +13,7 @@ class ApplyToVacancyUseCase(BaseProfileUseCase):
 
         employer = vacancy.employer
         self.task_service.send_notification_task(
-            to=[employer.email],
+            object=employer,
             message=(
                 'Someone applied for your vacancy'
                 f'with title: {vacancy.title}'

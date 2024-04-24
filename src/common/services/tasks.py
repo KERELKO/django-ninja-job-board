@@ -1,23 +1,44 @@
-from dataclasses import dataclass, field
-from typing import Callable
-from celery import shared_task
+from dataclasses import dataclass
+from typing import Callable, Iterable, TypeVar
 
-from .notifications import EmailNotificationService
+from src.common.tasks.celery_tasks import (
+    celery_notification_group_task,
+    celery_notification_task,
+)
+
+from .base import BaseBackgroundTaskService
 
 
-# Can't think up something better,
-# Because Celery doesn't like classes :(
-
-
-@shared_task
-def celery_email_notification(**kwargs):
-    EmailNotificationService().send_notification(**kwargs)
+T = TypeVar('T')
 
 
 @dataclass
-class CeleryTaskObserver:
-    notification_tasks: list[Callable] = field(default_factory=list)
+class CeleryTaskService(BaseBackgroundTaskService):
+    celery_notification_task: Callable = celery_notification_task
+    celery_notification_group_task: Callable = celery_notification_group_task
 
-    def send_notification_task(self, **kwargs):
-        for task in self.notification_tasks:
-            task.delay(**kwargs)
+    def send_notification_task(
+        self,
+        message: str,
+        subject: str,
+        object: T,
+    ) -> None:
+        print(object.__class__.__name__)
+        self.celery_notification_task.delay(
+            message=message,
+            object_id=object.id,
+            subject=subject,
+            model_type=object.__class__.__name__,
+        )
+
+    def send_notification_group_task(
+        self,
+        message: str,
+        objects: Iterable[T],
+    ) -> None:
+        first = next(objects)
+        self.celery_notification_group_task.delay(
+            message=message,
+            objects_ids=[first.id]+[o.id for o in objects],
+            model_type=first.__class__.__name__,
+        )

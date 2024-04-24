@@ -22,6 +22,7 @@ class BaseProfile(models.Model):
     )
     email = models.CharField(
         max_length=60,
+        blank=True,
     )
 
     class Meta:

@@ -16,3 +16,9 @@ class EmployerProfile(BaseProfile):
             last_name=self.last_name,
             company_name=self.company_name,
         )
+
+    def save(self, *args, **kwargs):
+        if not self.email:
+            if self.user.email:
+                self.email = self.user.email
+        return super().save(*args, **kwargs)

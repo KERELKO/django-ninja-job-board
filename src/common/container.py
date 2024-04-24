@@ -8,10 +8,7 @@ from src.apps.profiles.use_cases.jobseekers import (
     ApplyToVacancyUseCase,
     UpdateJobSeekerProfileUseCase,
 )
-from src.common.services.tasks import (
-    CeleryTaskObserver,
-    celery_email_notification,
-)
+from src.common.services.tasks import CeleryTaskService
 from src.apps.profiles.converters.employers import ORMEmployerConverter
 from src.apps.profiles.services.employers import ORMEmployerService
 from src.apps.profiles.services.jobseekers import ORMJobSeekerService
@@ -52,10 +49,7 @@ class Container:
         # Background Task Service
         container.register(
             BaseBackgroundTaskService,
-            CeleryTaskObserver,
-            notification_tasks=[
-                celery_email_notification,
-            ]
+            CeleryTaskService,
         )
 
         # Notifiction Service
@@ -84,9 +78,11 @@ class Container:
             ORMVacancyService,
             converter=ORMVacancyConverter()
         )
+
         # Use Cases
         container.register(CreateVacancyUseCase)
         container.register(ApplyToVacancyUseCase)
         container.register(FilterCandidatesInVacancyUseCase)
         container.register(UpdateJobSeekerProfileUseCase)
+
         return container

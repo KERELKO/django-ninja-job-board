@@ -4,13 +4,13 @@ from typing import Iterable, TypeVar, Any
 
 
 # Entity TypeVar
-TE = TypeVar('TE')
+ET = TypeVar('ET')
 
 
 @dataclass
 class BaseService(ABC):
     @abstractmethod
-    def get_list(self, filters: Any, offset: int, limit: int) -> list[TE]:
+    def get_list(self, filters: Any, offset: int, limit: int) -> list[ET]:
         ...
 
     @abstractmethod
@@ -18,11 +18,11 @@ class BaseService(ABC):
         ...
 
     @abstractmethod
-    def get(self, id: int) -> TE:
+    def get(self, id: int) -> ET:
         ...
 
     @abstractmethod
-    def get_all(self, filters: Any) -> Iterable[TE]:
+    def get_all(self, filters: Any) -> Iterable[ET]:
         ...
 
 
@@ -33,7 +33,7 @@ class BaseNotificationService(ABC):
         self,
         message: str,
         subject: str,
-        to: list[str],
+        to: ET,
     ) -> None:
         ...
 
@@ -41,10 +41,25 @@ class BaseNotificationService(ABC):
     def send_notification_group(
         self,
         message: str,
-        recipient_list: list[tuple[str, str]],
+        objects: list[ET]
     ) -> None:
         ...
 
 
 class BaseBackgroundTaskService:
-    ...
+    @abstractmethod
+    def send_notification_task(
+        self,
+        message: str,
+        subject: str,
+        to: ET,
+    ) -> None:
+        ...
+
+    @abstractmethod
+    def send_notification_task_group(
+        self,
+        message: str,
+        objects: Iterable[ET],
+    ) -> None:
+        ...
