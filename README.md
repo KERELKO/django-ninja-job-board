@@ -126,3 +126,4 @@ If you'd like to contribute to this project, feel free to fork the repository an
         └── test_vacancies.py
 
 ```
+Boilerplate: https://github.com/greedWizard/django-docker-compose-postgres-boilerplate
