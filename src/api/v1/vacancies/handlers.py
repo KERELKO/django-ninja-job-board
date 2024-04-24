@@ -1,6 +1,7 @@
-from django.http import HttpRequest
+from django.http import Http404, HttpRequest
 from ninja import Router, Query
 
+from src.common.services.exceptions import ServiceException
 from src.apps.vacancies.use_cases.vacancies import CreateVacancyUseCase
 from src.common.container import Container
 from src.apps.vacancies.filters import VacancyFilters
@@ -56,8 +57,11 @@ def create_vacancy(
     usecase = Container.resolve(CreateVacancyUseCase)
     data = vacancy_data.model_dump()
     employer_id = data.pop('employer_id')
-    vacancy_entity = usecase.execute(
-        employer_id=employer_id,
-        **data,
-    )
+    try:
+        vacancy_entity = usecase.execute(
+            employer_id=employer_id,
+            **data,
+        )
+    except ServiceException as e:
+        raise Http404(e)
     return APIResponseSchema(data=VacancyOut(**vacancy_entity.to_dict()))

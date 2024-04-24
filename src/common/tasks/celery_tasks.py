@@ -5,6 +5,7 @@ from src.common.services.notifications import (
     BaseNotificationService,
     EmailNotificationService,
     PhoneNotificationService,
+    ComposedNotificationService
 )
 from src.common.utils.celery import get_orm_models
 
@@ -15,7 +16,12 @@ T = TypeVar('T')
 
 # TODO: to solve this problem
 # Cannot import notification service from Container due to circular imports
-notification_service: BaseNotificationService = PhoneNotificationService()
+notification_service: BaseNotificationService = ComposedNotificationService(
+    notification_services=[
+        PhoneNotificationService(),
+        EmailNotificationService(),
+    ]
+)
 
 
 @shared_task

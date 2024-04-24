@@ -4,6 +4,8 @@ from django.core.mail import send_mail, send_mass_mail
 
 from django.conf import settings
 
+from src.common.services.exceptions import NotificationException
+
 from .base import BaseNotificationService
 
 
@@ -18,11 +20,15 @@ class EmailNotificationService(BaseNotificationService):
         subject: str,
         from_email: str = settings.EMAIL_FROM,
     ) -> None:
+        try:
+            email = object.email
+        except AttributeError:
+            raise NotificationException(f'{subject} does not have an email')
         send_mail(
             message=message,
             subject=subject,
             from_email=from_email,
-            recipient_list=[object.email],
+            recipient_list=[email],
             fail_silently=False,
         )
 
@@ -32,8 +38,16 @@ class EmailNotificationService(BaseNotificationService):
         objects: list[ET],
         from_email: str = settings.EMAIL_FROM,
     ) -> None:
+        data = []
+        for obj in objects:
+            try:
+                email = obj.email
+            except AttributeError:
+                continue
+                # TODO: to log the exception
+            data.append((str(obj), message, from_email, (email,)))
         send_mass_mail(
-            ((str(obj), message, from_email, [obj.email]) for obj in objects),
+            data,
             fail_silently=False,
         )
 
@@ -45,7 +59,13 @@ class PhoneNotificationService(BaseNotificationService):
         subject: str,
         object: ET,
     ) -> None:
-        print(f'{subject} with phone {object.phone} got a message:\n{message}')
+        try:
+            phone = object.phone
+        except AttributeError:
+            raise NotificationException(
+                f'{subject} does not have a phone number'
+            )
+        print(f'{subject} with phone {phone} got a message:\n{message}')
 
     def send_notification_group(
         self,
@@ -53,7 +73,11 @@ class PhoneNotificationService(BaseNotificationService):
         objects: list[ET],
     ) -> None:
         for obj in objects:
-            print(f'{obj} with phone {obj.phone} got a message:\n{message}')
+            try:
+                phone = object.phone
+            except AttributeError:
+                continue
+            print(f'{obj} with phone {phone} got a message:\n{message}')
 
 
 @dataclass

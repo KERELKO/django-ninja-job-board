@@ -1,3 +1,4 @@
+from typing import Any
 from dataclasses import dataclass
 
 
@@ -7,8 +8,8 @@ class ConverterException(Exception):
 
 @dataclass
 class IncorrectConverterArgument(ConverterException):
-    obj: any
-    choices: list[any]
+    obj: Any
+    choices: list[Any]
     _message: str | None = None
 
     @property

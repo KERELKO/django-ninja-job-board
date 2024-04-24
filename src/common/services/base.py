@@ -3,11 +3,9 @@ from dataclasses import dataclass
 from typing import Iterable, TypeVar, Any
 
 
-# Entity TypeVar
 ET = TypeVar('ET')
 
 
-@dataclass
 class BaseService(ABC):
     @abstractmethod
     def get_list(self, filters: Any, offset: int, limit: int) -> list[ET]:
@@ -26,14 +24,13 @@ class BaseService(ABC):
         ...
 
 
-@dataclass
 class BaseNotificationService(ABC):
     @abstractmethod
     def send_notification(
         self,
         message: str,
         subject: str,
-        to: ET,
+        object: ET,
     ) -> None:
         ...
 
@@ -46,20 +43,30 @@ class BaseNotificationService(ABC):
         ...
 
 
+@dataclass
 class BaseBackgroundTaskService:
+    notification_service: BaseNotificationService
+
     @abstractmethod
     def send_notification_task(
         self,
         message: str,
         subject: str,
-        to: ET,
+        object: ET,
     ) -> None:
-        ...
+        self.notification_service.send_notification_task(
+            message=message,
+            subject=subject,
+            object=object,
+        )
 
     @abstractmethod
-    def send_notification_task_group(
+    def send_notification_group_task(
         self,
         message: str,
         objects: Iterable[ET],
     ) -> None:
-        ...
+        self.notification_service.send_notification_group_task(
+            message=message,
+            objects=objects,
+        )

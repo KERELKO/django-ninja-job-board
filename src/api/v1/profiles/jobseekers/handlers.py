@@ -1,7 +1,8 @@
-from django.http import HttpRequest
+from django.http import HttpRequest, Http404
 from ninja import Query, Router
 from ninja.security import django_auth
 
+from src.common.services.exceptions import ServiceException
 from src.apps.profiles.use_cases.jobseekers import (
     ApplyToVacancyUseCase,
     UpdateJobSeekerProfileUseCase,
@@ -64,7 +65,10 @@ def apply_to_vacancy(
     vacancy_id: int
 ) -> APIResponseSchema[dict[str, str]]:
     use_case = Container.resolve(ApplyToVacancyUseCase)
-    use_case.execute(candidate_id=id, vacancy_id=vacancy_id)
+    try:
+        use_case.execute(candidate_id=id, vacancy_id=vacancy_id)
+    except ServiceException as e:
+        raise Http404(e)
     return APIResponseSchema(data={'Status': 'OK'})
 
 
@@ -77,7 +81,10 @@ def get_my_profile(
     request: HttpRequest,
 ) -> APIResponseSchema[JobSeekerProfileOut]:
     service = Container.resolve(BaseJobSeekerService)
-    profile = service.get_by_user_id(user_id=request.user.id)
+    try:
+        profile = service.get_by_user_id(user_id=request.user.id)
+    except ServiceException as e:
+        raise Http404(e)
     return APIResponseSchema(data=JobSeekerProfileOut.from_entity(profile))
 
 
@@ -90,7 +97,10 @@ def update_profile(
     use_case = Container.resolve(UpdateJobSeekerProfileUseCase)
     if not profile.skills:
         profile.skills = None
-    updated_profile = use_case.execute(id, **profile.model_dump())
+    try:
+        updated_profile = use_case.execute(id, **profile.model_dump())
+    except ServiceException as e:
+        raise Http404(e)
     return APIResponseSchema(
         data=JobSeekerProfileOut.from_entity(updated_profile)
     )

@@ -1,5 +1,17 @@
 import punq
 
+from src.common.services.base import (
+    BaseBackgroundTaskService,
+    BaseNotificationService,
+)
+from src.common.services.notifications import EmailNotificationService
+from src.common.services.tasks import CeleryTaskService
+from src.apps.profiles.converters.employers import ORMEmployerConverter
+from src.apps.profiles.services.employers import ORMEmployerService
+from src.apps.profiles.services.jobseekers import ORMJobSeekerService
+from src.apps.profiles.converters.jobseekers import (
+    ORMJobSeekerConverter,
+)
 from src.apps.vacancies.use_cases.vacancies import (
     CreateVacancyUseCase,
     FilterCandidatesInVacancyUseCase,
@@ -7,13 +19,6 @@ from src.apps.vacancies.use_cases.vacancies import (
 from src.apps.profiles.use_cases.jobseekers import (
     ApplyToVacancyUseCase,
     UpdateJobSeekerProfileUseCase,
-)
-from src.common.services.tasks import CeleryTaskService
-from src.apps.profiles.converters.employers import ORMEmployerConverter
-from src.apps.profiles.services.employers import ORMEmployerService
-from src.apps.profiles.services.jobseekers import ORMJobSeekerService
-from src.apps.profiles.converters.jobseekers import (
-    ORMJobSeekerConverter,
 )
 from src.apps.profiles.services.base import (
     BaseEmployerService,
@@ -24,12 +29,6 @@ from src.apps.vacancies.services.vacancies import (
     ORMVacancyService,
 )
 from src.apps.vacancies.converters import ORMVacancyConverter
-
-from src.common.services.base import (
-    BaseBackgroundTaskService,
-    BaseNotificationService,
-)
-from src.common.services.notifications import EmailNotificationService
 
 
 class Container:
@@ -46,16 +45,16 @@ class Container:
     def _init():
         container = punq.Container()
 
-        # Background Task Service
-        container.register(
-            BaseBackgroundTaskService,
-            CeleryTaskService,
-        )
-
         # Notifiction Service
         container.register(
             BaseNotificationService,
             EmailNotificationService,
+        )
+
+        # Background Task Service
+        container.register(
+            BaseBackgroundTaskService,
+            CeleryTaskService,
         )
 
         # JobSeeker Profile Service
