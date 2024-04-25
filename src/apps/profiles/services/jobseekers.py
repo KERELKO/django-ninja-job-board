@@ -16,21 +16,21 @@ class ORMJobSeekerService(BaseJobSeekerService):
     def _get_or_raise_exception(
         self,
         message: str = None,
-        prefetch: bool = False,
+        related: bool = False,
         **kwargs,
     ) -> JobSeekerProfile:
         try:
-            if prefetch:
+            if related:
                 profile = JobSeekerProfile.objects.select_related(
                     'user'
                 ).get(**kwargs)
             else:
                 profile = JobSeekerProfile.objects.get(**kwargs)
-            return profile
         except JobSeekerProfile.DoesNotExist:
             if not message:
                 raise ServiceException(message='Profile not found')
             raise ServiceException(message=message)
+        return profile
 
     def _build_queryset(self, filters: JobSeekerFilters) -> Q:
         query = Q()

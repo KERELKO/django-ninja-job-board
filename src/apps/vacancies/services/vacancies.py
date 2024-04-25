@@ -19,21 +19,21 @@ class ORMVacancyService(BaseVacancyService):
     def _get_or_raise_exception(
         self,
         message: str = None,
-        prefetch: bool = False,
+        related: bool = False,
         **kwargs,
     ) -> Vacancy:
         try:
-            if prefetch:
-                profile = Vacancy.objects.select_related(
+            if related:
+                vacancy = Vacancy.objects.select_related(
                     'employer'
                 ).prefetch_related('interested_candidates').get(**kwargs)
             else:
-                profile = Vacancy.objects.get(**kwargs)
-            return profile
+                vacancy = Vacancy.objects.get(**kwargs)
         except Vacancy.DoesNotExist:
             if not message:
                 raise ServiceException(message='Vacancy not found')
             raise ServiceException(message=message)
+        return vacancy
 
     def _build_queryset(self, filters: VacancyFilters) -> Q:
         query = Q(open=True)

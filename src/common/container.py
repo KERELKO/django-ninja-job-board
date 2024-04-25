@@ -4,7 +4,7 @@ from src.common.services.base import (
     BaseBackgroundTaskService,
     BaseNotificationService,
 )
-from src.common.services.notifications import EmailNotificationService
+from src.common.services.notifications import ComposedNotificationService
 from src.common.services.tasks import CeleryTaskService
 from src.apps.profiles.converters.employers import ORMEmployerConverter
 from src.apps.profiles.services.employers import ORMEmployerService
@@ -48,7 +48,7 @@ class Container:
         # Notifiction Service
         container.register(
             BaseNotificationService,
-            EmailNotificationService,
+            ComposedNotificationService,
         )
 
         # Background Task Service
