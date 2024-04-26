@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 
@@ -8,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@*ui57pn(n9ds1p(dcknhkmsck+0l83+0-@zf@hx)ijyysjf-a'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', default='my_secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -87,5 +88,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_FROM = 'kerelkobarabash@gmail.com'
 
 CELERY_TIMEZONE = 'Europe/Kiev'
-# CELERY_TASK_TRACK_STARTED = True
-# CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 6

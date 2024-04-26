@@ -1,11 +1,14 @@
 import punq
 
 from src.common.services.base import (
-    BaseBackgroundTaskService,
     BaseNotificationService,
 )
-from src.common.services.notifications import ComposedNotificationService
-from src.common.services.tasks import CeleryTaskService
+from src.common.services.notifications import (
+    CeleryNotificationService,
+    ComposedNotificationService,
+    EmailNotificationService,
+    PhoneNotificationService,
+)
 from src.apps.profiles.converters.employers import ORMEmployerConverter
 from src.apps.profiles.services.employers import ORMEmployerService
 from src.apps.profiles.services.jobseekers import ORMJobSeekerService
@@ -45,16 +48,19 @@ class Container:
     def _init():
         container = punq.Container()
 
+        notification_service = CeleryNotificationService(
+            notification_service=ComposedNotificationService(
+                notification_services=(
+                    EmailNotificationService(),
+                    PhoneNotificationService(),
+                )
+            )
+        )
+
         # Notifiction Service
         container.register(
             BaseNotificationService,
-            ComposedNotificationService,
-        )
-
-        # Background Task Service
-        container.register(
-            BaseBackgroundTaskService,
-            CeleryTaskService,
+            instance=notification_service,
         )
 
         # JobSeeker Profile Service

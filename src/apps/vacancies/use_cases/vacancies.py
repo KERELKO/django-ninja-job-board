@@ -15,7 +15,7 @@ class CreateVacancyUseCase(BaseVacancyUseCase):
             allow_notifications=True,
         )
         jobseekers = self.jobseeker_service.get_all(filters=filters)
-        self.task_service.send_notification_group_task(
+        self.notification_service.send_notification_group(
             message='New vacancy with skills that you have appeared!',
             objects=jobseekers,
         )

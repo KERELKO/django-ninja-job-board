@@ -1,17 +1,20 @@
 from dataclasses import dataclass
 from typing import TypeVar
-from django.core.mail import send_mail, send_mass_mail
 
+from django.core.mail import send_mail, send_mass_mail
 from django.conf import settings
 
-from src.common.services.exceptions import NotificationException
+from celery import Task
 
+from src.common.utils.celery import get_orm_models
+from src.common.services.exceptions import NotificationException
 from .base import BaseNotificationService
 
 
 ET = TypeVar('ET')
 
 
+@dataclass(unsafe_hash=True)
 class EmailNotificationService(BaseNotificationService):
     def send_notification(
         self,
@@ -52,6 +55,7 @@ class EmailNotificationService(BaseNotificationService):
         )
 
 
+@dataclass(unsafe_hash=True)
 class PhoneNotificationService(BaseNotificationService):
     def send_notification(
         self,
@@ -80,9 +84,9 @@ class PhoneNotificationService(BaseNotificationService):
             print(f'{obj} with phone {phone} got a message:\n{message}')
 
 
-@dataclass
+@dataclass(unsafe_hash=True)
 class ComposedNotificationService(BaseNotificationService):
-    notification_services: list[BaseNotificationService]
+    notification_services: tuple[BaseNotificationService]
 
     def send_notification(
         self,
@@ -100,3 +104,57 @@ class ComposedNotificationService(BaseNotificationService):
     ) -> None:
         for service in self.notification_services:
             service.send_notification_group(message, objects)
+
+
+@dataclass(unsafe_hash=True)
+class CeleryNotificationService(BaseNotificationService, Task):
+    notification_service: BaseNotificationService
+    name: str = 'CeleryNotificationTaskService'
+
+    def send_notification(
+        self,
+        message: str,
+        subject: str,
+        object: ET,
+    ) -> None:
+        self.delay(
+            message=message,
+            object_id=object.id,
+            subject=subject,
+            model_type=object.__class__.__name__,
+        )
+
+    def send_notification_group(
+        self,
+        message: str,
+        objects: list[ET],
+    ) -> None:
+        first = next(objects)
+        self.delay(
+            message=message,
+            object_ids=[first.id]+[o.id for o in objects],
+            model_type=first.__class__.__name__,
+            group=True,
+        )
+
+    def run(self, message: str, group: bool = False, **kwargs) -> None:
+        if not group:
+            object = get_orm_models(
+                list_ids=[kwargs.get('object_id')],
+                model_type=kwargs.get('model_type'),
+                first=True,
+            )
+            self.notification_service.send_notification(
+                object=object,
+                message=message,
+                subject=kwargs.get('subject', 'User'),
+            )
+        else:
+            objects = get_orm_models(
+                model_type=kwargs['model_type'],
+                list_ids=kwargs['object_ids'],
+            )
+            self.notification_service.send_notification_group(
+                message=message,
+                objects=objects,
+            )
