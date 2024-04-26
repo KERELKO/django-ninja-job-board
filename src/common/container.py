@@ -48,7 +48,7 @@ class Container:
     def _init():
         container = punq.Container()
 
-        notification_service = CeleryNotificationService(
+        celery_notification_service = CeleryNotificationService(
             notification_service=ComposedNotificationService(
                 notification_services=(
                     EmailNotificationService(),
@@ -60,7 +60,7 @@ class Container:
         # Notifiction Service
         container.register(
             BaseNotificationService,
-            instance=notification_service,
+            instance=celery_notification_service,
         )
 
         # JobSeeker Profile Service

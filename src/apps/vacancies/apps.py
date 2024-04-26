@@ -6,6 +6,7 @@ class VacanciesConfig(AppConfig):
     name = "src.apps.vacancies"
 
     def ready(self):
+        # TODO: to move this code into another place
         from src.common.services.base import BaseNotificationService
         from src.common.container import Container
         task = Container.resolve(BaseNotificationService)

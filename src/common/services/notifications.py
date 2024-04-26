@@ -151,8 +151,8 @@ class CeleryNotificationService(BaseNotificationService, Task):
             )
         else:
             objects = get_orm_models(
-                model_type=kwargs['model_type'],
-                list_ids=kwargs['object_ids'],
+                model_type=kwargs.get('model_type'),
+                list_ids=kwargs.get('object_ids'),
             )
             self.notification_service.send_notification_group(
                 message=message,

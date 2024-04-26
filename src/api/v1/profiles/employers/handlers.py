@@ -1,5 +1,6 @@
 from django.http import HttpRequest
 from ninja import Query, Router
+from ninja.security import django_auth_superuser
 
 from src.apps.profiles.services.base import BaseEmployerService
 from src.apps.profiles.filters import EmployerFilter
@@ -14,6 +15,7 @@ router = Router(tags=['employers'])
 
 @router.get(
     '',
+    auth=django_auth_superuser,
     response=APIResponseSchema[ListPaginatedResponse[EmployerProfileOut]]
 )
 def get_employer_list(
