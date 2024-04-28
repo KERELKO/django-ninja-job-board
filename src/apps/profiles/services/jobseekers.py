@@ -27,6 +27,7 @@ class ORMJobSeekerService(BaseJobSeekerService):
             else:
                 profile = JobSeekerProfile.objects.get(**kwargs)
         except JobSeekerProfile.DoesNotExist:
+            self.logger.info('Profile not found', extra={'info': kwargs})
             if not message:
                 raise ServiceException(message='Profile not found')
             raise ServiceException(message=message)

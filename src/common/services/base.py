@@ -1,11 +1,16 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from logging import Logger
 from typing import Iterable, TypeVar, Any
 
 
 ET = TypeVar('ET')
 
 
+@dataclass
 class BaseService(ABC):
+    logger: Logger
+
     @abstractmethod
     def get_list(self, filters: Any, offset: int, limit: int) -> list[ET]:
         ...

@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Iterable
 
 from django.db.models import Q
@@ -13,7 +12,6 @@ from src.apps.vacancies.models import Vacancy
 from .base import BaseVacancyService
 
 
-@dataclass
 class ORMVacancyService(BaseVacancyService):
 
     def _get_or_raise_exception(
@@ -83,7 +81,7 @@ class ORMVacancyService(BaseVacancyService):
         vacancy = self._get_or_raise_exception(
             id=id,
             message=f'Vacancy with id \'{id}\' not found',
-            prefetch=True
+            related=True
         )
         return self.converter.handle(vacancy)
 
@@ -96,6 +94,7 @@ class ORMVacancyService(BaseVacancyService):
         try:
             employer = EmployerProfile.objects.get(id=employer_id)
         except EmployerProfile.DoesNotExist:
+            self.logger.info(f'Employer with id "{employer_id}" not found')
             raise ServiceException(
                 f'Employer with id \'{employer_id}\' not found'
             )
@@ -109,12 +108,13 @@ class ORMVacancyService(BaseVacancyService):
         try:
             candidate = JobSeekerProfile.objects.get(id=candidate_id)
         except JobSeekerProfile.DoesNotExist:
+            self.logger.info(f'Profile with id "{candidate_id}" not found')
             raise ServiceException(
                 f'Profile with id \'{candidate_id}\' not found'
             )
         vacancy = self._get_or_raise_exception(
             id=vacancy_id,
             message=f'Vacancy with id \'{vacancy_id}\' not found',
-            prefetch=True
+            related=True
         )
         vacancy.interested_candidates.add(candidate.id)

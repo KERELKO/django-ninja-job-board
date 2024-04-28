@@ -1,13 +1,17 @@
 from dataclasses import dataclass
 from typing import TypeVar
+from logging import Logger
 
 from django.core.mail import send_mail, send_mass_mail
 from django.conf import settings
 
 from celery import Task
 
-from src.common.utils.celery import get_orm_models
-from src.common.services.exceptions import NotificationException
+from src.core.exceptions import ApplicationException
+from src.common.models.exeptions import IncorrectModelTypeError
+from src.common.utils.orm import get_orm_models
+from src.common.services.exceptions import NotificationServiceException
+
 from .base import BaseNotificationService
 
 
@@ -16,6 +20,8 @@ ET = TypeVar('ET')
 
 @dataclass(unsafe_hash=True)
 class EmailNotificationService(BaseNotificationService):
+    logger: Logger
+
     def send_notification(
         self,
         message: str,
@@ -26,7 +32,13 @@ class EmailNotificationService(BaseNotificationService):
         try:
             email = object.email
         except AttributeError:
-            raise NotificationException(f'{subject} does not have an email')
+            self.logger.warning(
+                msg=f'"{subject}" does not have an email address',
+                extra={'info': f'cls: {object.__class__}, id: {object.id}'}
+            )
+            raise NotificationServiceException(
+                f'{subject} does not have an email'
+            )
         send_mail(
             message=message,
             subject=subject,
@@ -46,8 +58,11 @@ class EmailNotificationService(BaseNotificationService):
             try:
                 email = obj.email
             except AttributeError:
+                self.logger.warning(
+                    msg=f'"{obj}" does not have an email address',
+                    extra={'info': f'cls: {obj.__class__}, id: {obj.id}'}
+                )
                 continue
-                # TODO: to log the exception
             data.append((str(obj), message, from_email, (email,)))
         send_mass_mail(
             data,
@@ -57,6 +72,8 @@ class EmailNotificationService(BaseNotificationService):
 
 @dataclass(unsafe_hash=True)
 class PhoneNotificationService(BaseNotificationService):
+    logger: Logger
+
     def send_notification(
         self,
         message: str,
@@ -66,7 +83,11 @@ class PhoneNotificationService(BaseNotificationService):
         try:
             phone = object.phone
         except AttributeError:
-            raise NotificationException(
+            self.logger.warning(
+                msg=f'"{subject}" does not have an phone number',
+                extra={'info': f'cls: {object.__class__}, id: {object.id}'}
+            )
+            raise NotificationServiceException(
                 f'{subject} does not have a phone number'
             )
         print(f'{subject} with phone {phone} got a message:\n{message}')
@@ -78,8 +99,12 @@ class PhoneNotificationService(BaseNotificationService):
     ) -> None:
         for obj in objects:
             try:
-                phone = object.phone
+                phone = obj.phone
             except AttributeError:
+                self.logger.warning(
+                    msg=f'"{obj}" does not have a phone number',
+                    extra={'info': f'cls: {obj.__class__}, id: {obj.id}'}
+                )
                 continue
             print(f'{obj} with phone {phone} got a message:\n{message}')
 
@@ -95,7 +120,11 @@ class ComposedNotificationService(BaseNotificationService):
         object: ET,
     ) -> None:
         for service in self.notification_services:
-            service.send_notification(message, subject, object)
+            service.send_notification(
+                message=message,
+                subject=subject,
+                object=object,
+            )
 
     def send_notification_group(
         self,
@@ -103,11 +132,15 @@ class ComposedNotificationService(BaseNotificationService):
         objects: list[ET],
     ) -> None:
         for service in self.notification_services:
-            service.send_notification_group(message, objects)
+            service.send_notification_group(
+                message=message,
+                objects=objects,
+            )
 
 
 @dataclass(unsafe_hash=True)
 class CeleryNotificationService(BaseNotificationService, Task):
+    logger: Logger
     notification_service: BaseNotificationService
     name: str = 'CeleryNotificationTaskService'
 
@@ -139,21 +172,35 @@ class CeleryNotificationService(BaseNotificationService, Task):
 
     def run(self, message: str, group: bool = False, **kwargs) -> None:
         if not group:
-            object = get_orm_models(
-                list_ids=[kwargs.get('object_id')],
-                model_type=kwargs.get('model_type'),
-                first=True,
-            )
+            try:
+                object = get_orm_models(
+                    list_ids=[kwargs.get('object_id')],
+                    model_type=kwargs.get('model_type'),
+                    first=True,
+                )
+            except IncorrectModelTypeError as e:
+                self.logger.error(
+                    msg='Invalid model type',
+                    extra={'info': e.model_type}
+                )
+                raise ApplicationException(e)
             self.notification_service.send_notification(
                 object=object,
                 message=message,
                 subject=kwargs.get('subject', 'User'),
             )
         else:
-            objects = get_orm_models(
-                model_type=kwargs.get('model_type'),
-                list_ids=kwargs.get('object_ids'),
-            )
+            try:
+                objects = get_orm_models(
+                    model_type=kwargs.get('model_type'),
+                    list_ids=kwargs.get('object_ids'),
+                )
+            except IncorrectModelTypeError as e:
+                self.logger.error(
+                    msg='Invalid model type',
+                    extra={'info': e.model_type}
+                )
+                raise ApplicationException(e)
             self.notification_service.send_notification_group(
                 message=message,
                 objects=objects,

@@ -1,3 +1,6 @@
+from functools import lru_cache
+from logging import Logger, getLogger
+
 import punq
 
 from src.common.services.base import (
@@ -35,29 +38,33 @@ from src.apps.vacancies.converters import ORMVacancyConverter
 
 
 class Container:
-
+    @lru_cache(1)
     @staticmethod
     def get():
         return Container._init()
 
     @staticmethod
     def resolve(cls):
-        return Container._init().resolve(cls)
+        return Container.get().resolve(cls)
 
     @staticmethod
     def _init():
         container = punq.Container()
 
+        # Logger
+        lg = getLogger('custom')
+        container.register(Logger, instance=lg)
+
+        # Notifiction Service
         celery_notification_service = CeleryNotificationService(
             notification_service=ComposedNotificationService(
                 notification_services=(
-                    EmailNotificationService(),
-                    PhoneNotificationService(),
+                    EmailNotificationService(lg),
+                    PhoneNotificationService(lg),
                 )
-            )
+            ),
+            logger=lg,
         )
-
-        # Notifiction Service
         container.register(
             BaseNotificationService,
             instance=celery_notification_service,

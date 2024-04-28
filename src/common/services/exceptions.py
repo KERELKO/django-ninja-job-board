@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 
-
-class ApplicationException(Exception):
-    ...
+from src.core.exceptions import ApplicationException
 
 
 @dataclass
@@ -14,7 +12,7 @@ class ServiceException(ApplicationException):
 
 
 @dataclass
-class NotificationException(ApplicationException):
+class NotificationServiceException(ApplicationException):
     message: str
 
     def __str__(self) -> str:

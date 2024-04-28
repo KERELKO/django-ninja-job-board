@@ -2,3 +2,5 @@ __pycache__/
 .env
 data/
 *sqlite3
+.app.log
+.django.log
