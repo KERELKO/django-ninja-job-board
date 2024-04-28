@@ -180,8 +180,7 @@ class CeleryNotificationService(BaseNotificationService, Task):
                 )
             except IncorrectModelTypeError as e:
                 self.logger.error(
-                    msg='Invalid model type',
-                    extra={'info': e.model_type}
+                    msg=f'Invalid model type {e.model_type}',
                 )
                 raise ApplicationException(e)
             self.notification_service.send_notification(
@@ -197,8 +196,7 @@ class CeleryNotificationService(BaseNotificationService, Task):
                 )
             except IncorrectModelTypeError as e:
                 self.logger.error(
-                    msg='Invalid model type',
-                    extra={'info': e.model_type}
+                    msg=f'Invalid model type {e.model_type}',
                 )
                 raise ApplicationException(e)
             self.notification_service.send_notification_group(

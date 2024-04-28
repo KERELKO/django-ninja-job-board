@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'src.apps.users.apps.UsersConfig',
     'src.apps.vacancies.apps.VacanciesConfig',
     'src.apps.profiles.apps.ProfilesConfig',
+    'src.core.init.InitConfig',
 ]
 
 MIDDLEWARE = [
