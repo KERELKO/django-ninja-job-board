@@ -1,6 +1,6 @@
 EXEC = docker exec -it
 MANAGE_PY = python manage.py
-APP = jobboard-app-1
+APP = django-ninja-job-board-app-1
 
 
 .PHONY: migrate
