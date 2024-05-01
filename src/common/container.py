@@ -55,7 +55,7 @@ class Container:
         lg = getLogger('custom')
         container.register(Logger, instance=lg)
 
-        # Notifiction Service
+        # Notification Service
         celery_notification_service = CeleryNotificationService(
             notification_service=ComposedNotificationService(
                 notification_services=(
