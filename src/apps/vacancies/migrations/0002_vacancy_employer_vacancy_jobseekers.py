@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('profiles', '0003_alter_jobseekerprofile_options_and_more'),
         ('vacancies', '0001_initial'),
@@ -15,12 +14,21 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='vacancy',
             name='employer',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='vacancies', to='profiles.employerprofile'),
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='vacancies',
+                to='profiles.employerprofile',
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='vacancy',
             name='jobseekers',
-            field=models.ManyToManyField(blank=True, related_name='interested_in', to='profiles.jobseekerprofile'),
+            field=models.ManyToManyField(
+                blank=True,
+                related_name='interested_in',
+                to='profiles.jobseekerprofile',
+            ),
         ),
     ]

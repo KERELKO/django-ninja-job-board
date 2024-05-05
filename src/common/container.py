@@ -32,6 +32,7 @@ from src.apps.vacancies.services.vacancies import (
 )
 from src.apps.vacancies.converters import ORMVacancyConverter
 
+
 class Container:
     @lru_cache(1)
     @staticmethod
@@ -47,7 +48,7 @@ class Container:
         container = punq.Container()
 
         # Logger
-        lg = getLogger("custom")
+        lg = getLogger('custom')
         container.register(Logger, instance=lg)
 
         # Notification Service

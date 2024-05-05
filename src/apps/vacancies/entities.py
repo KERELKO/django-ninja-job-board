@@ -23,18 +23,18 @@ class VacancyEntity:
 
     def to_dict(self) -> dict:
         return {
-            "id": self.id,
-            "employer": self.employer.to_dict(),
-            "title": self.title,
-            "description": self.description,
-            "company_name": self.company_name,
-            "location": self.location,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
-            "is_remote": self.is_remote,
-            "required_experience": self.required_experience,
-            "interested_candidates": [
+            'id': self.id,
+            'employer': self.employer.to_dict(),
+            'title': self.title,
+            'description': self.description,
+            'company_name': self.company_name,
+            'location': self.location,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at,
+            'is_remote': self.is_remote,
+            'required_experience': self.required_experience,
+            'interested_candidates': [
                 candidate.to_dict() for candidate in self.interested_candidates
             ],
-            "required_skills": self.required_skills
+            'required_skills': self.required_skills,
         }

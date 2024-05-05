@@ -26,14 +26,14 @@ class Vacancy(TimedBaseModel):
     )
     # Fields
     title = models.CharField(
-        max_length=300
+        max_length=300,
     )
     description = models.TextField(
-        blank=False
+        blank=False,
     )
     salary = models.PositiveIntegerField(
         default=0,
-        blank=True
+        blank=True,
     )
     location = models.CharField(
         max_length=255,
@@ -71,12 +71,8 @@ class Vacancy(TimedBaseModel):
     available = AvaiableManager()
 
     class Meta:
-        ordering = (
-            'created_at',
-        )
-        indexes = (
-            models.Index(fields=['slug']),
-        )
+        ordering = ('created_at',)
+        indexes = (models.Index(fields=['slug']),)
         verbose_name_plural = 'vacancies'
 
     def __str__(self):

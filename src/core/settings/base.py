@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'src.apps.users.apps.UsersConfig',
     'src.apps.vacancies.apps.VacanciesConfig',
     'src.apps.profiles.apps.ProfilesConfig',
@@ -73,7 +72,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -130,6 +128,6 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
             'extra': {'info': 'Useful information'},
-        }
+        },
     },
 }

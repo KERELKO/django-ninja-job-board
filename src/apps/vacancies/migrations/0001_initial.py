@@ -5,33 +5,66 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='Vacancy',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='DateTimeField, sets when object is created')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='DateTimeField, updates for every object update')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text='DateTimeField, sets when object is created',
+                    ),
+                ),
+                (
+                    'updated_at',
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text='DateTimeField, updates for every object update',
+                    ),
+                ),
                 ('title', models.CharField(max_length=300)),
                 ('description', models.TextField()),
-                ('slug', models.SlugField(blank=True, unique_for_date='created_at')),
+                (
+                    'slug',
+                    models.SlugField(blank=True, unique_for_date='created_at'),
+                ),
                 ('location', models.CharField(max_length=255)),
                 ('company_name', models.CharField(max_length=255)),
                 ('remote', models.BooleanField(blank=True, null=True)),
-                ('required_experience', models.PositiveIntegerField(blank=True, default=0)),
+                (
+                    'required_experience',
+                    models.PositiveIntegerField(blank=True, default=0),
+                ),
                 ('open', models.BooleanField(default=True)),
-                ('required_skills', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=30), size=None)),
+                (
+                    'required_skills',
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.CharField(max_length=30), size=None
+                    ),
+                ),
             ],
             options={
                 'verbose_name_plural': 'vacancies',
                 'ordering': ('created_at',),
-                'indexes': [models.Index(fields=['slug'], name='vacancies_v_slug_f71efa_idx')],
+                'indexes': [
+                    models.Index(
+                        fields=['slug'], name='vacancies_v_slug_f71efa_idx'
+                    )
+                ],
             },
         ),
     ]

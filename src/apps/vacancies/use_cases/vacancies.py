@@ -23,5 +23,4 @@ class CreateVacancyUseCase(BaseVacancyUseCase):
 
 
 class FilterCandidatesInVacancyUseCase(BaseVacancyUseCase):
-    def execute(self, vacancy_id: int) -> list[JobSeekerEntity]:
-        ...
+    def execute(self, vacancy_id: int) -> list[JobSeekerEntity]: ...

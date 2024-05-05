@@ -19,15 +19,16 @@ class JobSeekerProfile(BaseProfile):
         ]
     )
     about_me = models.TextField()
-    experience = models.PositiveIntegerField(default=0)
-
+    experience = models.PositiveIntegerField(
+        default=0,
+    )
     skills = ArrayField(
         models.CharField(max_length=30),
         blank=False,
     )
-
-    # Other fields
-    allow_notifications = models.BooleanField(default=False)
+    allow_notifications = models.BooleanField(
+        default=False,
+    )
 
     class Meta:
         ordering = ('-first_name',)

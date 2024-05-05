@@ -17,10 +17,7 @@ router = Router(tags=['vacancies'])
 
 
 # TODO: tests
-@router.get(
-    '',
-    response=APIResponseSchema[ListPaginatedResponse[VacancyOut]]
-)
+@router.get('', response=APIResponseSchema[ListPaginatedResponse[VacancyOut]])
 def get_vacancy_list(
     request: HttpRequest,
     pagination_in: Query[PaginationIn],

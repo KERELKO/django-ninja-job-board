@@ -2,8 +2,7 @@ from typing import Any
 from dataclasses import dataclass
 
 
-class ConverterException(Exception):
-    ...
+class ConverterException(Exception): ...
 
 
 @dataclass

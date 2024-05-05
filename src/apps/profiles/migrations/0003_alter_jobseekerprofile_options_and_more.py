@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('profiles', '0002_initial'),
     ]
@@ -18,6 +17,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='jobseekerprofile',
             name='age',
-            field=models.PositiveIntegerField(validators=[django.core.validators.MinValueValidator(limit_value=18), django.core.validators.MaxValueValidator(limit_value=100)]),
+            field=models.PositiveIntegerField(
+                validators=[
+                    django.core.validators.MinValueValidator(limit_value=18),
+                    django.core.validators.MaxValueValidator(limit_value=100),
+                ]
+            ),
         ),
     ]

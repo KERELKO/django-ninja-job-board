@@ -21,9 +21,9 @@ class ORMEmployerService(BaseEmployerService):
     ) -> EmployerProfile:
         try:
             if related:
-                profile = EmployerProfile.objects.select_related(
-                    'user'
-                ).get(**lookup_parameters)
+                profile = EmployerProfile.objects.select_related('user').get(
+                    **lookup_parameters
+                )
             else:
                 profile = EmployerProfile.objects.get(**lookup_parameters)
         except EmployerProfile.DoesNotExist:
@@ -43,19 +43,15 @@ class ORMEmployerService(BaseEmployerService):
         return query
 
     def get_list(
-        self,
-        filters: EmployerFilter,
-        offset: int,
-        limit: int
+        self, filters: EmployerFilter, offset: int, limit: int
     ) -> list[EmployerEntity]:
         query = self._build_queryset(filters)
-        employers = EmployerProfile.objects.filter(query)[offset:offset+limit]
+        employers = EmployerProfile.objects.filter(query)[
+            offset : offset + limit
+        ]
         return [self.converter.handle(employer) for employer in employers]
 
-    def get_total_count(
-        self,
-        filters: EmployerFilter
-    ) -> list[EmployerEntity]:
+    def get_total_count(self, filters: EmployerFilter) -> list[EmployerEntity]:
         query = self._build_queryset(filters)
         total_count = EmployerProfile.objects.filter(query).count()
         return total_count

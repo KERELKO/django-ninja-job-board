@@ -24,9 +24,9 @@ class ORMJobSeekerService(BaseJobSeekerService):
     ) -> JobSeekerProfile:
         try:
             if related:
-                profile = JobSeekerProfile.objects.select_related(
-                    'user'
-                ).get(**lookup_parameters)
+                profile = JobSeekerProfile.objects.select_related('user').get(
+                    **lookup_parameters
+                )
             else:
                 profile = JobSeekerProfile.objects.get(**lookup_parameters)
         except JobSeekerProfile.DoesNotExist:
@@ -53,23 +53,20 @@ class ORMJobSeekerService(BaseJobSeekerService):
         return query
 
     def get_list(
-        self,
-        filters: JobSeekerFilters,
-        offset: int = 0,
-        limit: int = 20
+        self, filters: JobSeekerFilters, offset: int = 0, limit: int = 20
     ) -> list[JobSeekerEntity]:
         query = self._build_queryset(filters=filters)
         if filters.vacancy_id:
             vacancy = Vacancy.objects.prefetch_related(
                 'interested_candidates'
-                ).get(id=filters.vacancy_id)
-            profile_list = vacancy.interested_candidates.filter(
-                query
-            )[offset:offset+limit]
+            ).get(id=filters.vacancy_id)
+            profile_list = vacancy.interested_candidates.filter(query)[
+                offset : offset + limit
+            ]
         else:
-            profile_list = JobSeekerProfile.objects.filter(
-                query
-            )[offset:offset+limit]
+            profile_list = JobSeekerProfile.objects.filter(query)[
+                offset : offset + limit
+            ]
         return [self.converter.handle(profile) for profile in profile_list]
 
     def get(self, id: int) -> JobSeekerEntity:
@@ -97,6 +94,6 @@ class ORMJobSeekerService(BaseJobSeekerService):
     def get_by_user_id(self, user_id: int) -> JobSeekerEntity:
         profile = self._get_model_or_raise_exception(
             user_id=user_id,
-            message=f'User with id \'{user_id}\' does not have profile',
+            message=f"User with id '{user_id}' does not have profile",
         )
         return self.converter.handle(profile)

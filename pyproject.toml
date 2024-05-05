@@ -25,3 +25,15 @@ build-backend = "poetry.core.masonry.api"
 
 [pytest]
 DJANGO_SETTINGS_MODULE = "src.core.settings.prod"
+
+[tool.ruff]
+line-length = 79
+indent-width = 4
+show-fixes = true
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

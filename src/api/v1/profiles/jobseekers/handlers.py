@@ -20,8 +20,7 @@ router = Router(tags=['jobseekers'])
 
 
 @router.get(
-    '',
-    response=APIResponseSchema[ListPaginatedResponse[JobSeekerProfileOut]]
+    '', response=APIResponseSchema[ListPaginatedResponse[JobSeekerProfileOut]]
 )
 def get_profile_list(
     request: HttpRequest,
@@ -43,8 +42,8 @@ def get_profile_list(
         pagination=PaginationOut(
             offset=pagination_in.offset,
             limit=pagination_in.limit,
-            total=total_profile_count
-        )
+            total=total_profile_count,
+        ),
     )
     return APIResponseSchema(data=profiles_list)
 
@@ -52,17 +51,15 @@ def get_profile_list(
 @router.post(
     '/{id}/apply/to/{vacancy_id}',
     response=APIResponseSchema[dict[str, str]],
-    description='''
+    description="""
         This handler takes jobseeker profile id as first parameter
         and vacancy_id as the second,
         adds the profile to the list of interested candidates for the vacancy,
         and sends notification to the employer
-    '''
+    """,
 )
 def apply_to_vacancy(
-    request: HttpRequest,
-    id: int,
-    vacancy_id: int
+    request: HttpRequest, id: int, vacancy_id: int
 ) -> APIResponseSchema[dict[str, str]]:
     use_case = Container.resolve(ApplyToVacancyUseCase)
     try:

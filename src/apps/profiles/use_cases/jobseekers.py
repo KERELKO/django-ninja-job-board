@@ -18,7 +18,7 @@ class ApplyToVacancyUseCase(BaseProfileUseCase):
                 'Someone applied for your vacancy'
                 f'with title: {vacancy.title}'
             ),
-            subject=f'{employer.first_name} {employer.last_name}'
+            subject=f'{employer.first_name} {employer.last_name}',
         )
 
 

@@ -42,4 +42,4 @@ CELERY_RESULT_BACKEND = (
     f'db+postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@'
     f'{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_NAME}'
 )
-CELERY_IMPORTS = ('src.common.services.notifications')
+CELERY_IMPORTS = 'src.common.services.notifications'

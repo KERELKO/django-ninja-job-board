@@ -6,16 +6,15 @@ from .entities import VacancyEntity
 
 
 class ORMVacancyConverter(BaseConverter):
-
     def handle(
         self,
         obj: VacancyModel | VacancyEntity,
     ) -> VacancyModel | VacancyEntity:
-        '''
+        """
         Handle given object and convert it to needed type
         Entity -> DTO
         DTO -> Entity
-        '''
+        """
         if obj.__class__ == VacancyModel:
             return self.convert_to_entity(obj)
         elif obj.__class__ == VacancyEntity:
@@ -26,7 +25,7 @@ class ORMVacancyConverter(BaseConverter):
             )
 
     def convert_to_entity(self, model: VacancyModel) -> VacancyEntity:
-        '''Convert Django model into entity'''
+        """Convert Django model into entity"""
         candidates = model.interested_candidates.all()
         entity = VacancyEntity(
             id=model.id,
@@ -45,7 +44,7 @@ class ORMVacancyConverter(BaseConverter):
         return entity
 
     def convert_to_model(self, entity: VacancyEntity) -> VacancyModel:
-        '''Convert entity into Django model'''
+        """Convert entity into Django model"""
         model = VacancyModel(
             id=entity.id,
             employer=entity.employer,

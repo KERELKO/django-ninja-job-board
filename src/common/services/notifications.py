@@ -34,7 +34,7 @@ class EmailNotificationService(BaseNotificationService):
         except AttributeError:
             self.logger.warning(
                 msg=f'"{subject}" does not have an email address',
-                extra={'info': f'cls: {object.__class__}, id: {object.id}'}
+                extra={'info': f'cls: {object.__class__}, id: {object.id}'},
             )
             raise NotificationServiceException(
                 f'{subject} does not have an email'
@@ -60,7 +60,7 @@ class EmailNotificationService(BaseNotificationService):
             except AttributeError:
                 self.logger.warning(
                     msg=f'"{obj}" does not have an email address',
-                    extra={'info': f'cls: {obj.__class__}, id: {obj.id}'}
+                    extra={'info': f'cls: {obj.__class__}, id: {obj.id}'},
                 )
                 continue
             data.append((str(obj), message, from_email, (email,)))
@@ -85,7 +85,7 @@ class PhoneNotificationService(BaseNotificationService):
         except AttributeError:
             self.logger.warning(
                 msg=f'"{subject}" does not have an phone number',
-                extra={'info': f'cls: {object.__class__}, id: {object.id}'}
+                extra={'info': f'cls: {object.__class__}, id: {object.id}'},
             )
             raise NotificationServiceException(
                 f'{subject} does not have a phone number'
@@ -103,7 +103,7 @@ class PhoneNotificationService(BaseNotificationService):
             except AttributeError:
                 self.logger.warning(
                     msg=f'"{obj}" does not have a phone number',
-                    extra={'info': f'cls: {obj.__class__}, id: {obj.id}'}
+                    extra={'info': f'cls: {obj.__class__}, id: {obj.id}'},
                 )
                 continue
             print(f'{obj} with phone {phone} got a message:\n{message}')
@@ -172,9 +172,9 @@ class CeleryNotificationService(BaseNotificationService, Task):
             return
         self.delay(
             message=message,
-            object_ids=[first_object.id]+[o.id for o in objects],
+            object_ids=[first_object.id] + [o.id for o in objects],
             model_type=first_object.__class__.__name__,
-            group=True
+            group=True,
         )
 
     def run(self, message: str, group: bool = False, **kwargs) -> None:

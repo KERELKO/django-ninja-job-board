@@ -26,9 +26,11 @@ class ORMVacancyService(BaseVacancyService):
     ) -> Vacancy:
         try:
             if related:
-                vacancy = Vacancy.objects.select_related(
-                    'employer'
-                ).prefetch_related('interested_candidates').get(**kwargs)
+                vacancy = (
+                    Vacancy.objects.select_related('employer')
+                    .prefetch_related('interested_candidates')
+                    .get(**kwargs)
+                )
             else:
                 vacancy = Vacancy.objects.get(**kwargs)
         except Vacancy.DoesNotExist:
@@ -40,9 +42,8 @@ class ORMVacancyService(BaseVacancyService):
     def _build_queryset(self, filters: VacancyFilters) -> Q:
         query = Q(open=True)
         if filters.search:
-            query &= (
-                Q(title__icontains=filters.search) |
-                Q(description__icontains=filters.search)
+            query &= Q(title__icontains=filters.search) | Q(
+                description__icontains=filters.search
             )
         if filters.is_remote is not None:
             query &= Q(remote=filters.is_remote)
@@ -73,7 +74,7 @@ class ORMVacancyService(BaseVacancyService):
         limit: int = 20,
     ) -> list[VacancyEntity]:
         query = self._build_queryset(filters=filters)
-        vacancy_list = Vacancy.objects.filter(query)[offset:offset + limit]
+        vacancy_list = Vacancy.objects.filter(query)[offset : offset + limit]
         return [self.converter.handle(vacancy) for vacancy in vacancy_list]
 
     def get_total_count(self, filters: VacancyFilters) -> int:
@@ -83,9 +84,7 @@ class ORMVacancyService(BaseVacancyService):
 
     def get(self, id: int) -> VacancyEntity:
         vacancy = self._get_model_or_raise_exception(
-            id=id,
-            message=f'Vacancy with id \'{id}\' not found',
-            related=True
+            id=id, message=f"Vacancy with id '{id}' not found", related=True
         )
         return self.converter.handle(vacancy)
 
@@ -110,7 +109,7 @@ class ORMVacancyService(BaseVacancyService):
         )
         vacancy = self._get_model_or_raise_exception(
             id=vacancy_id,
-            message=f'Vacancy with id \'{vacancy_id}\' not found',
-            related=True
+            message=f"Vacancy with id '{vacancy_id}' not found",
+            related=True,
         )
         vacancy.interested_candidates.add(candidate.id)
