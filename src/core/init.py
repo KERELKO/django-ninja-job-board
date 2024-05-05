@@ -1,4 +1,4 @@
-from django.apps import AppConfig, apps
+from django.apps import AppConfig
 
 
 class InitConfig(AppConfig):
@@ -10,12 +10,10 @@ class InitConfig(AppConfig):
 
     def ready(self):
         from src.common.services.base import BaseNotificationService
+        from src.common.services.notifications import CeleryNotificationService
         from src.common.container import Container
+        from celery import current_app
 
-        task = Container.resolve(BaseNotificationService)
-
-        # Wait until all Django apps are ready
-        if apps.apps_ready:
-            from celery import current_app
-
-            current_app.register_task(task)
+        service = Container.resolve(BaseNotificationService)
+        if service.__class__ == CeleryNotificationService:
+            current_app.register_task(service)
