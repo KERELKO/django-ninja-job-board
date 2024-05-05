@@ -1,9 +1,10 @@
 from abc import abstractmethod
 from dataclasses import dataclass
 
+from src.apps.profiles.entities.jobseekers import JobSeekerEntity
+from src.apps.vacancies.entities import VacancyEntity
 from src.common.services.base import BaseService
 from src.common.converters.base import BaseConverter
-from src.apps.vacancies.entities import VacancyEntity
 
 
 @dataclass
@@ -15,3 +16,11 @@ class BaseVacancyService(BaseService):
 
     @abstractmethod
     def add_candidate(self, candidate_id: int, vacancy_id: int) -> None: ...
+
+    @abstractmethod
+    def filter_candidates(
+        self,
+        vacancy_id: int,
+        offset: int,
+        limit: int,
+    ) -> list[JobSeekerEntity]: ...

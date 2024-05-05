@@ -73,10 +73,13 @@ class ORMJobSeekerService(BaseJobSeekerService):
         profile = self._get_model_or_raise_exception(id=id)
         return self.converter.handle(profile)
 
-    def get_all(self, filters: JobSeekerFilters) -> Iterable[JobSeekerEntity]:
+    def get_all(
+        self,
+        filters: JobSeekerFilters = JobSeekerFilters(allow_notifications=True),
+    ) -> Iterable[JobSeekerEntity]:
         query = self._build_queryset(filters=filters)
         for jobseeker in JobSeekerProfile.objects.filter(query):
-            yield jobseeker
+            yield self.converter.handle(jobseeker)
 
     def get_total_count(self, filters: JobSeekerFilters) -> int:
         query = self._build_queryset(filters)

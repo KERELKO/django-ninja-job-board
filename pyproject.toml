@@ -27,7 +27,7 @@ build-backend = "poetry.core.masonry.api"
 DJANGO_SETTINGS_MODULE = "src.core.settings.prod"
 
 [tool.ruff]
-line-length = 79
+line-length = 82
 indent-width = 4
 show-fixes = true
 

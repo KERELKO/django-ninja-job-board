@@ -3,9 +3,10 @@ from typing import Iterable
 
 from django.db.models import Q
 
+from src.apps.profiles.entities.jobseekers import JobSeekerEntity
+from src.common.services.exceptions import ServiceException
 from src.apps.profiles.services.jobseekers import ORMJobSeekerService
 from src.apps.profiles.services.employers import ORMEmployerService
-from src.common.services.exceptions import ServiceException
 from src.apps.vacancies.filters import VacancyFilters
 from src.apps.vacancies.entities import VacancyEntity
 from src.apps.vacancies.models import Vacancy
@@ -22,17 +23,17 @@ class ORMVacancyService(BaseVacancyService):
         self,
         message: str = None,
         related: bool = False,
-        **kwargs,
+        **lookup_parameters,
     ) -> Vacancy:
         try:
             if related:
                 vacancy = (
                     Vacancy.objects.select_related('employer')
                     .prefetch_related('interested_candidates')
-                    .get(**kwargs)
+                    .get(**lookup_parameters)
                 )
             else:
-                vacancy = Vacancy.objects.get(**kwargs)
+                vacancy = Vacancy.objects.get(**lookup_parameters)
         except Vacancy.DoesNotExist:
             if not message:
                 raise ServiceException(message='Vacancy not found')
@@ -48,9 +49,7 @@ class ORMVacancyService(BaseVacancyService):
         if filters.is_remote is not None:
             query &= Q(remote=filters.is_remote)
         if filters.required_experience__gte:
-            query &= Q(
-                required_experience__gte=filters.required_experience__gte
-            )
+            query &= Q(required_experience__gte=filters.required_experience__gte)
         if filters.required_skills:
             # ?Icontains does not work with ArrayField
             skills = [skill.lower() for skill in filters.required_skills]
@@ -84,14 +83,16 @@ class ORMVacancyService(BaseVacancyService):
 
     def get(self, id: int) -> VacancyEntity:
         vacancy = self._get_model_or_raise_exception(
-            id=id, message=f"Vacancy with id '{id}' not found", related=True
+            id=id,
+            related=True,
+            message=f"Vacancy with id '{id}' not found",
         )
         return self.converter.handle(vacancy)
 
     def get_all(self, filters: VacancyFilters) -> Iterable[VacancyEntity]:
         query = self._build_queryset(filters=filters)
         for vacancy in Vacancy.objects.filter(query):
-            yield vacancy
+            yield self.converter.handle(vacancy)
 
     def create(self, employer_id: int, **vacancy_data) -> VacancyEntity:
         employer = self.employer_service._get_model_or_raise_exception(
@@ -113,3 +114,36 @@ class ORMVacancyService(BaseVacancyService):
             related=True,
         )
         vacancy.interested_candidates.add(candidate.id)
+
+    # TODO: to cache it
+    def filter_candidates(
+        self,
+        vacancy_id: int,
+        offset: int,
+        limit: int,
+    ) -> Iterable[JobSeekerEntity]:
+        vacancy = self._get_model_or_raise_exception(id=vacancy_id)
+        vacancy_candidates = vacancy.interested_candidates.all()[offset:limit]
+        candidates = []
+        for candidate in vacancy_candidates:
+            score = 0
+            if candidate.experience >= vacancy.required_experience:
+                score += 7
+            for skill in candidate.skills:
+                if skill in vacancy.required_skills:
+                    score += 2
+                else:
+                    score += 0.5
+            candidates.append((score, candidate))
+        sorted_candidates_with_scores = sorted(
+            candidates,
+            key=lambda x: x[0],
+            reverse=True,
+        )
+        sorted_candidates = list(
+            map(
+                lambda x: self.jobseeker_service.converter.handle(x[1]),
+                sorted_candidates_with_scores,
+            )
+        )
+        return sorted_candidates
