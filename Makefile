@@ -23,7 +23,6 @@ shell:
 bash:
 	${EXEC} ${APP} bash
 
-
 .PHONY: tests
 tests:
 	${EXEC} ${APP} pytest

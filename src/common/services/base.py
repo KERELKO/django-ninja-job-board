@@ -42,6 +42,6 @@ class BaseNotificationService(ABC):
     def send_notification_group(
         self,
         message: str,
-        objects: list[ET]
+        objects: Iterable[ET]
     ) -> None:
         ...

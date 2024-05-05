@@ -1,14 +1,41 @@
 from typing import Iterable
 from django.db.models import Q
 
+from src.apps.profiles.converters.employers import ORMEmployerConverter
 from src.apps.profiles.entities.employers import EmployerEntity
 from src.apps.profiles.models.employers import EmployerProfile
 from src.apps.profiles.filters import EmployerFilter
+from src.common.services.exceptions import ServiceException
 
 from .base import BaseEmployerService
 
 
 class ORMEmployerService(BaseEmployerService):
+    converter: ORMEmployerConverter = ORMEmployerConverter()
+
+    def _get_model_or_raise_exception(
+        self,
+        message: str = None,
+        related: bool = False,
+        **lookup_parameters,
+    ) -> EmployerProfile:
+        try:
+            if related:
+                profile = EmployerProfile.objects.select_related(
+                    'user'
+                ).get(**lookup_parameters)
+            else:
+                profile = EmployerProfile.objects.get(**lookup_parameters)
+        except EmployerProfile.DoesNotExist:
+            self.logger.info(
+                'Profile not found',
+                extra={'info': lookup_parameters},
+            )
+            if not message:
+                raise ServiceException(message='Profile not found')
+            raise ServiceException(message=message)
+        return profile
+
     def _build_queryset(self, filters: EmployerFilter) -> Q:
         query = Q()
         if filters.company_name:

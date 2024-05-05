@@ -12,12 +12,8 @@ from src.common.services.notifications import (
     EmailNotificationService,
     PhoneNotificationService,
 )
-from src.apps.profiles.converters.employers import ORMEmployerConverter
 from src.apps.profiles.services.employers import ORMEmployerService
 from src.apps.profiles.services.jobseekers import ORMJobSeekerService
-from src.apps.profiles.converters.jobseekers import (
-    ORMJobSeekerConverter,
-)
 from src.apps.vacancies.use_cases.vacancies import (
     CreateVacancyUseCase,
     FilterCandidatesInVacancyUseCase,
@@ -36,7 +32,6 @@ from src.apps.vacancies.services.vacancies import (
 )
 from src.apps.vacancies.converters import ORMVacancyConverter
 
-
 class Container:
     @lru_cache(1)
     @staticmethod
@@ -52,7 +47,7 @@ class Container:
         container = punq.Container()
 
         # Logger
-        lg = getLogger('custom')
+        lg = getLogger("custom")
         container.register(Logger, instance=lg)
 
         # Notification Service
@@ -71,24 +66,29 @@ class Container:
         )
 
         # JobSeeker Profile Service
+        orm_jobseeker_service = ORMJobSeekerService(logger=lg)
         container.register(
             BaseJobSeekerService,
-            ORMJobSeekerService,
-            converter=ORMJobSeekerConverter(),
+            instance=orm_jobseeker_service,
         )
 
         # Employer Profile Service
+        orm_employer_service = ORMEmployerService(logger=lg)
         container.register(
             BaseEmployerService,
-            ORMEmployerService,
-            converter=ORMEmployerConverter(),
+            instance=orm_employer_service,
         )
 
         # Vacancy Service
+        orm_vacancy_service = ORMVacancyService(
+            converter=ORMVacancyConverter(),
+            jobseeker_service=orm_jobseeker_service,
+            employer_service=orm_employer_service,
+            logger=lg,
+        )
         container.register(
             BaseVacancyService,
-            ORMVacancyService,
-            converter=ORMVacancyConverter()
+            instance=orm_vacancy_service,
         )
 
         # Use Cases

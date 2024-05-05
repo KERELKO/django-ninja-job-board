@@ -1,10 +1,11 @@
+from dataclasses import dataclass
 from typing import Iterable
 
 from django.db.models import Q
 
+from src.apps.profiles.services.jobseekers import ORMJobSeekerService
+from src.apps.profiles.services.employers import ORMEmployerService
 from src.common.services.exceptions import ServiceException
-from src.apps.profiles.models.employers import EmployerProfile
-from src.apps.profiles.models.jobseekers import JobSeekerProfile
 from src.apps.vacancies.filters import VacancyFilters
 from src.apps.vacancies.entities import VacancyEntity
 from src.apps.vacancies.models import Vacancy
@@ -12,9 +13,12 @@ from src.apps.vacancies.models import Vacancy
 from .base import BaseVacancyService
 
 
+@dataclass
 class ORMVacancyService(BaseVacancyService):
+    employer_service: ORMEmployerService
+    jobseeker_service: ORMJobSeekerService
 
-    def _get_or_raise_exception(
+    def _get_model_or_raise_exception(
         self,
         message: str = None,
         related: bool = False,
@@ -78,7 +82,7 @@ class ORMVacancyService(BaseVacancyService):
         return vacancy_count
 
     def get(self, id: int) -> VacancyEntity:
-        vacancy = self._get_or_raise_exception(
+        vacancy = self._get_model_or_raise_exception(
             id=id,
             message=f'Vacancy with id \'{id}\' not found',
             related=True
@@ -91,13 +95,9 @@ class ORMVacancyService(BaseVacancyService):
             yield vacancy
 
     def create(self, employer_id: int, **vacancy_data) -> VacancyEntity:
-        try:
-            employer = EmployerProfile.objects.get(id=employer_id)
-        except EmployerProfile.DoesNotExist:
-            self.logger.info(f'Employer with id "{employer_id}" not found')
-            raise ServiceException(
-                f'Employer with id \'{employer_id}\' not found'
-            )
+        employer = self.employer_service._get_model_or_raise_exception(
+            id=employer_id
+        )
         new_vacancy = Vacancy.objects.create(
             employer=employer,
             **vacancy_data,
@@ -105,14 +105,10 @@ class ORMVacancyService(BaseVacancyService):
         return self.converter.handle(new_vacancy)
 
     def add_candidate(self, vacancy_id: int, candidate_id: int) -> None:
-        try:
-            candidate = JobSeekerProfile.objects.get(id=candidate_id)
-        except JobSeekerProfile.DoesNotExist:
-            self.logger.info(f'Profile with id "{candidate_id}" not found')
-            raise ServiceException(
-                f'Profile with id \'{candidate_id}\' not found'
-            )
-        vacancy = self._get_or_raise_exception(
+        candidate = self.jobseeker_service._get_model_or_raise_exception(
+            id=candidate_id
+        )
+        vacancy = self._get_model_or_raise_exception(
             id=vacancy_id,
             message=f'Vacancy with id \'{vacancy_id}\' not found',
             related=True

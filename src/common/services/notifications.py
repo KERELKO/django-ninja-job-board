@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TypeVar
+from typing import Iterable, TypeVar
 from logging import Logger
 
 from django.core.mail import send_mail, send_mass_mail
@@ -50,7 +50,7 @@ class EmailNotificationService(BaseNotificationService):
     def send_notification_group(
         self,
         message: str,
-        objects: list[ET],
+        objects: Iterable[ET],
         from_email: str = settings.EMAIL_FROM,
     ) -> None:
         data = []
@@ -95,7 +95,7 @@ class PhoneNotificationService(BaseNotificationService):
     def send_notification_group(
         self,
         message: str,
-        objects: list[ET],
+        objects: Iterable[ET],
     ) -> None:
         for obj in objects:
             try:
@@ -129,7 +129,7 @@ class ComposedNotificationService(BaseNotificationService):
     def send_notification_group(
         self,
         message: str,
-        objects: list[ET],
+        objects: Iterable[ET],
     ) -> None:
         for service in self.notification_services:
             service.send_notification_group(
@@ -160,14 +160,21 @@ class CeleryNotificationService(BaseNotificationService, Task):
     def send_notification_group(
         self,
         message: str,
-        objects: list[ET],
+        objects: Iterable[ET],
     ) -> None:
-        first = next(objects)
+        try:
+            first_object = next(objects)
+        except StopIteration:
+            self.logger.info(
+                msg='"Objects" argument is empty',
+                extra={'info': f'{objects}'},
+            )
+            return
         self.delay(
             message=message,
-            object_ids=[first.id]+[o.id for o in objects],
-            model_type=first.__class__.__name__,
-            group=True,
+            object_ids=[first_object.id]+[o.id for o in objects],
+            model_type=first_object.__class__.__name__,
+            group=True
         )
 
     def run(self, message: str, group: bool = False, **kwargs) -> None:
