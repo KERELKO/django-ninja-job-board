@@ -9,14 +9,14 @@ Additionally it has flexible notification system that uses **Celery**.
 
 - [Django](https://www.djangoproject.com/) - High-level Python web framework that encourages rapid development and clean, pragmatic design.
 - [NinjaAPI](https://django-ninja.dev/) - Powerful framework for building APIs in Django with flexible and fast development.
-- [Postgresql](https://www.postgresql.org/) - Relational database management system
+- [PostgreSQl](https://www.postgresql.org/) - Relational database management system
 - [Docker](https://www.docker.com/) - Platform for developing, shipping, and running applications in containers.
 - [Redis](https://redis.io/) - Fastest in-memory storage for caching
 - [Celery](https://docs.celeryq.dev/en/stable/) - Simple, flexible, and reliable distributed system to process vast amounts of messages
-
+- [RabbitMQ](https://www.rabbitmq.com/) - Reliable and mature messaging and streaming broker
 ## Installation
-For installation of the project you required to have __Docker__ installed on your machine,  
-and for better usage experience __Make tools__  
+For installation of the project you required to have __Docker__ and __docker-compose__ tool installed on your machine,  
+and for better usage experience: __Make tools__  
 To install this project:
 
 1. Clone this repository.
@@ -29,9 +29,10 @@ docker compose up --build
 ```
 3. The project provides several helpful Make commands, run
 ```
-make migrations
+make migrate
 ```
-to make migrations 
+the command responsible for applying and unapplying migrations
+
 ## Usage
 
 Once the application is running, you can access the job board features through the __Swagger__  
@@ -39,12 +40,21 @@ Go to __http://127.0.0.1:8000/api/docs#/__ in your browser while project is runn
 
 ![image](https://github.com/KERELKO/Django-ninja-job-board/assets/89779202/729725bf-6716-4cca-9e73-5e1aa2b1a5f3)
 
+### Make commands
+```
+make mirgate  # make database migrations
+make migrations  # applied databases changes 
+make superuser  # make django superuser
+make tests  # run all available tests
+make shell  # open django shell in app container
+make bash  # open terminal in app container
+```
 ## Contributing
 
 If you'd like to contribute to this project, feel free to fork the repository and submit a pull request. Please follow the existing code style and ensure that all tests pass before submitting your changes.
 
 ## Project structure
-**Every package has init file**
+
 ```
 .
 ├── Dockerfile
@@ -170,4 +180,10 @@ If you'd like to contribute to this project, feel free to fork the repository an
         ├── conftest.py
         └── test_vacancies.py
 ```
+TODO:
+ - [ ] Make structure more flexible, to pass in usecases and services entities instead of ids
+ - [ ] Cache the content
+ - [ ] Add Oauth2 auth with Google
+ - [ ] Cover more parts of the project with robust tests  
+### The main structure of the project is taken from the repo below thanks to the author!
 Boilerplate: https://github.com/greedWizard/django-docker-compose-postgres-boilerplate
