@@ -22,11 +22,12 @@ To install this project:
 ```
 git clone https://github.com/KERELKO/Django-ninja-job-board
 ```
-2. move to directory with __docker-compose.yaml__ and run:
+2. create __.env__ file based on **.env.example**
+3. move to directory with __docker-compose.yaml__ and run:
 ```
 docker compose up --build
 ```
-3. The project provides several helpful Make commands, run
+4. The project provides several helpful Make commands, run
 ```
 make migrate
 ```
