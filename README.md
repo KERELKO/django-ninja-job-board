@@ -1,8 +1,7 @@
 # Django Job Board
 
 Built with **Django**, **NinjaAPI**, **Celery**, **Rabbitmq**, **Redis** and **PostgreSQL**  
-It provides common job board features such as filtering vacancies and filtering candidates who have applied for a vacancy to find the best match.  
-__Oauth2__ is included, so users can login with their [Google](https://www.google.com/) accounts  
+It provides common job board features such as filtering vacancies and filtering candidates who have applied for a vacancy to find the best match.   
 Additionally it has flexible notification system that uses **Celery**.  
 
 ## Technologies Used
@@ -183,7 +182,6 @@ If you'd like to contribute to this project, feel free to fork the repository an
 TODO:
  - [ ] Make the structure more flexible by passing entities in use cases and services instead of ids
  - [ ] Cache the content
- - [ ] Add Oauth2
  - [ ] Cover more parts of the project with robust tests  
 ### The main structure of the project is taken from the repo below thanks to the author!
 Boilerplate: https://github.com/greedWizard/django-docker-compose-postgres-boilerplate
