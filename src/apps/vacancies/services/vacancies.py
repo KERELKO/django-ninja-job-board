@@ -43,9 +43,8 @@ class ORMVacancyService(BaseVacancyService):
     def _build_queryset(self, filters: VacancyFilters) -> Q:
         query = Q(open=True)
         if filters.search:
-            query &= Q(title__icontains=filters.search) | Q(
-                description__icontains=filters.search
-            )
+            query &= Q(title__icontains=filters.search)
+            query &= Q(description__icontains=filters.search)
         if filters.is_remote is not None:
             query &= Q(remote=filters.is_remote)
         if filters.required_experience__gte:
@@ -84,7 +83,7 @@ class ORMVacancyService(BaseVacancyService):
     def get(self, id: int) -> VacancyEntity:
         vacancy = self._get_model_or_raise_exception(
             id=id,
-            related=True,
+            related=False,
             message=f"Vacancy with id '{id}' not found",
         )
         return self.converter.handle(vacancy)
@@ -115,35 +114,12 @@ class ORMVacancyService(BaseVacancyService):
         )
         vacancy.interested_candidates.add(candidate.id)
 
-    # TODO: to cache it
-    def filter_candidates(
+    def get_list_candidates(
         self,
         vacancy_id: int,
-        offset: int,
-        limit: int,
-    ) -> Iterable[JobSeekerEntity]:
-        vacancy = self._get_model_or_raise_exception(id=vacancy_id)
-        vacancy_candidates = vacancy.interested_candidates.all()[offset:limit]
-        candidates = []
-        for candidate in vacancy_candidates:
-            score = 0
-            if candidate.experience >= vacancy.required_experience:
-                score += 7
-            for skill in candidate.skills:
-                if skill in vacancy.required_skills:
-                    score += 2
-                else:
-                    score += 0.5
-            candidates.append((score, candidate))
-        sorted_candidates_with_scores = sorted(
-            candidates,
-            key=lambda x: x[0],
-            reverse=True,
-        )
-        sorted_candidates = list(
-            map(
-                lambda x: self.jobseeker_service.converter.handle(x[1]),
-                sorted_candidates_with_scores,
-            )
-        )
-        return sorted_candidates
+        offset: int = 0,
+        limit: int = 20,
+    ) -> list[JobSeekerEntity]:
+        vacancy = Vacancy.objects.get(id=vacancy_id)
+        candidates = vacancy.interested_candidates.all()[offset:limit]
+        return [self.jobseeker_service.converter.handle(c) for c in candidates]

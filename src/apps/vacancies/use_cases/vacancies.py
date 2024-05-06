@@ -46,9 +46,30 @@ class FilterCandidatesInVacancyUseCase:
         offset: int,
         limit: int,
     ) -> list[JobSeekerEntity]:
-        candidates = self.vacancy_service.filter_candidates(
+        vacancy: VacancyEntity = self.vacancy_service.get(id=vacancy_id)
+        interested_candidates = self.vacancy_service.get_list_candidates(
             vacancy_id=vacancy_id,
             offset=offset,
             limit=limit,
         )
-        return candidates
+        candidates = []
+        # Simple Filter
+        for candidate in interested_candidates:
+            score = 0
+            if candidate.experience >= vacancy.required_experience:
+                score += 7 + candidate.experience - vacancy.required_experience
+            for skill in candidate.skills:
+                if skill in vacancy.required_skills:
+                    score += 2
+                else:
+                    score += 0.5
+            candidates.append((score, candidate))
+        sorted_candidates_with_scores = sorted(
+            candidates,
+            key=lambda x: x[0],
+            reverse=True,
+        )
+        sorted_candidates = list(
+            map(lambda x: x[1], sorted_candidates_with_scores)
+        )
+        return sorted_candidates

@@ -18,7 +18,7 @@ class BaseVacancyService(BaseService):
     def add_candidate(self, candidate_id: int, vacancy_id: int) -> None: ...
 
     @abstractmethod
-    def filter_candidates(
+    def get_list_candidates(
         self,
         vacancy_id: int,
         offset: int,
