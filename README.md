@@ -181,9 +181,9 @@ If you'd like to contribute to this project, feel free to fork the repository an
         └── test_vacancies.py
 ```
 TODO:
- - [ ] Make structure more flexible, to pass in usecases and services entities instead of ids
+ - [ ] Make the structure more flexible by passing entities in use cases and services instead of ids
  - [ ] Cache the content
- - [ ] Add Oauth2 auth with Google
+ - [ ] Add Oauth2
  - [ ] Cover more parts of the project with robust tests  
 ### The main structure of the project is taken from the repo below thanks to the author!
 Boilerplate: https://github.com/greedWizard/django-docker-compose-postgres-boilerplate
