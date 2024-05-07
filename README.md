@@ -14,7 +14,7 @@ Additionally it has flexible notification system that uses **Celery**.
 - [Celery](https://docs.celeryq.dev/en/stable/) - Simple, flexible, and reliable distributed system to process vast amounts of messages
 - [RabbitMQ](https://www.rabbitmq.com/) - Reliable and mature messaging and streaming broker
 ## Installation
-For installation of the project you required to have __Docker__ and __docker-compose__ tool installed on your machine,  
+For installation of the project you required to have __Docker__ and __docker-compose__ installed on your machine,  
 and for better usage experience: __Make tools__  
 To install this project:
 
@@ -42,11 +42,11 @@ Go to __http://127.0.0.1:8000/api/docs#/__ in your browser while project is runn
 
 ### Make commands
 ```
-make mirgate  # make database migrations
-make migrations  # applied databases changes 
-make superuser  # make django superuser
-make tests  # run all available tests
-make shell  # open django shell in app container
+make migrate  # applies database migrations (manage.py migrate)
+make migrations  # creates migrations (manage.py makemigrations) 
+make superuser  # make django superuser (manage.py createsuperuser)
+make tests  # run all available tests (pytest tests/)
+make shell  # open django shell in app container (python manage.py shell)
 make bash  # open terminal in app container
 ```
 ## Contributing
