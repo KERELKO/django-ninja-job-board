@@ -8,6 +8,8 @@ POSTGRES_USER = os.getenv('POSTGRES_USER')
 POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
 POSTGRES_HOST = os.getenv('POSTGRES_HOST')
 POSTGRES_PORT = int(os.getenv('POSTGRES_PORT'))
+REDIS_HOST = os.getenv('REDIS_HOST')
+REDIS_PORT = os.getenv('REDIS_PORT')
 
 DEBUG = True
 
@@ -43,3 +45,10 @@ CELERY_RESULT_BACKEND = (
     f'{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_NAME}'
 )
 CELERY_IMPORTS = 'src.common.services.notifications'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}',
+    }
+}

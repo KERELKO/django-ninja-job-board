@@ -1,4 +1,5 @@
 from django.http import HttpRequest
+from django.core.cache import cache
 from ninja import Query, Router
 from ninja.security import django_auth_superuser
 
@@ -40,3 +41,12 @@ def get_employer_list(
         pagination=pg_out,
     )
     return APIResponseSchema(data=data)
+
+
+@router.get('/ping', response=dict[str, str])
+def ping(request: HttpRequest) -> dict[str, str]:
+    cache.set('hello', 'hello')
+    hello = cache.get('hello')
+    if hello is not None:
+        return {hello: 'world'}
+    return {'ping': 'pong'}

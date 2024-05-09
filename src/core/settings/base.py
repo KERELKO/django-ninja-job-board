@@ -95,7 +95,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'extra_formatter': {
-            'format': '[{levelname}]({asctime}) {module}: {message}\nextra: {info}',
+            'format': '[{levelname}]({asctime}) {module}: {message}\nextra: {info}',  # noqa
             'style': '{',
         },
         'verbose': {

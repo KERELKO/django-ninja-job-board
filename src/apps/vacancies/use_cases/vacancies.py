@@ -2,10 +2,7 @@ from dataclasses import dataclass
 
 from src.apps.profiles.filters import JobSeekerFilters
 from src.apps.profiles.entities.jobseekers import JobSeekerEntity
-from src.apps.profiles.services.base import (
-    BaseEmployerService,
-    BaseJobSeekerService,
-)
+from src.apps.profiles.services.base import BaseJobSeekerService
 from src.apps.vacancies.entities import VacancyEntity
 from src.apps.vacancies.services.base import BaseVacancyService
 from src.common.services.base import BaseNotificationService

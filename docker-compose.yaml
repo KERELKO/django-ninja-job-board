@@ -1,6 +1,15 @@
 version: "3.7"
 
 services:
+  redis_cache:
+    image: redis:latest
+    volumes:
+      - ./data/redis/:/data
+    ports:
+      - "6379:6379"
+    depends_on:
+      - db
+
   db:
     image: postgres:latest
     volumes:
@@ -32,6 +41,7 @@ services:
     depends_on:
       - message_broker
       - db
+      - app
 
   app:
     build: .
@@ -42,5 +52,7 @@ services:
       - .env
     depends_on:
       - db
+      - message_broker
+      - redis_cache
     ports:
       - "8000:8000"
