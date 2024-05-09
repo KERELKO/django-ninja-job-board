@@ -4,8 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
 
-class CustomUser(AbstractUser):
-    ...
+class CustomUser(AbstractUser): ...
 
 
 class Favorite(models.Model):

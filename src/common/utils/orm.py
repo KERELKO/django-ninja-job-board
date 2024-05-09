@@ -1,4 +1,6 @@
-from typing import Iterable, TypeVar
+from django.db.models import QuerySet
+
+from typing import TypeVar
 
 from src.common.models.exeptions import IncorrectModelTypeError
 
@@ -17,18 +19,18 @@ def get_orm_models(
     model_type: str,
     list_ids: list[int],
     first: bool = False,
-) -> Iterable[T] | T:
-    '''
+) -> QuerySet[T] | T:
+    """
     Returns a list of Django models or a single object if first=True
-    '''
+    """
     if model_type in [JobSeekerProfile.__name__, JobSeekerEntity.__name__]:
         objects = JobSeekerProfile.objects.filter(id__in=list_ids)
     elif model_type in [EmployerProfile.__name__, EmployerEntity.__name__]:
         objects = EmployerProfile.objects.filter(id__in=list_ids)
     elif model_type in [VacancyEntity.__name__, Vacancy.__name__]:
-        objects = Vacancy.objects.filter(id_in=list_ids)
+        objects = Vacancy.objects.filter(id__in=list_ids)
     else:
-        raise IncorrectModelTypeError('Invalid model type', model_type)
+        raise IncorrectModelTypeError(model_type)
     if first:
         return objects.first()
     return objects.all()

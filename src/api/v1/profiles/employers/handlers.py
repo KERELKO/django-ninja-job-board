@@ -16,7 +16,7 @@ router = Router(tags=['employers'])
 @router.get(
     '',
     auth=django_auth_superuser,
-    response=APIResponseSchema[ListPaginatedResponse[EmployerProfileOut]]
+    response=APIResponseSchema[ListPaginatedResponse[EmployerProfileOut]],
 )
 def get_employer_list(
     request: HttpRequest,
@@ -37,6 +37,6 @@ def get_employer_list(
     )
     data = ListPaginatedResponse(
         items=[EmployerProfileOut.from_entity(p) for p in profile_list],
-        pagination=pg_out
+        pagination=pg_out,
     )
     return APIResponseSchema(data=data)

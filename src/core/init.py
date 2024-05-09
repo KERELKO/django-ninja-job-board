@@ -1,19 +1,28 @@
-from django.apps import AppConfig, apps
+from logging import Logger
+from django.apps import AppConfig
 
 
 class InitConfig(AppConfig):
-    '''
+    """
     Initialize config
-    '''
+    """
 
     name = 'src.core.init'
 
     def ready(self):
-        from src.common.services.base import BaseNotificationService
-        from src.common.container import Container
-        task = Container.resolve(BaseNotificationService)
+        from celery import current_app
 
-        # Wait until all Django apps are ready
-        if apps.apps_ready:
-            from celery import current_app
-            current_app.register_task(task)
+        from src.common.services.base import BaseNotificationService
+        from src.common.services.notifications import CeleryNotificationService
+        from src.common.container import Container
+
+        logger = Container.resolve(Logger)
+
+        service = Container.resolve(BaseNotificationService)
+        if service.__class__ == CeleryNotificationService:
+            current_app.register_task(service)
+        else:
+            logger.warning(
+                msg='BaseNotificationService is not Celery task',
+                extra={'info': f'__class__: {service.__class__}'},
+            )

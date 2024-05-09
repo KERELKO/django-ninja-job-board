@@ -12,20 +12,16 @@ class BaseService(ABC):
     logger: Logger
 
     @abstractmethod
-    def get_list(self, filters: Any, offset: int, limit: int) -> list[ET]:
-        ...
+    def get_list(self, filters: Any, offset: int, limit: int) -> list[ET]: ...
 
     @abstractmethod
-    def get_total_count(self, filters: Any) -> int:
-        ...
+    def get_total_count(self, filters: Any) -> int: ...
 
     @abstractmethod
-    def get(self, id: int) -> ET:
-        ...
+    def get(self, id: int) -> ET: ...
 
     @abstractmethod
-    def get_all(self, filters: Any) -> Iterable[ET]:
-        ...
+    def get_all(self, filters: Any) -> Iterable[ET]: ...
 
 
 class BaseNotificationService(ABC):
@@ -35,13 +31,9 @@ class BaseNotificationService(ABC):
         message: str,
         subject: str,
         object: ET,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @abstractmethod
     def send_notification_group(
-        self,
-        message: str,
-        objects: list[ET]
-    ) -> None:
-        ...
+        self, message: str, objects: Iterable[ET]
+    ) -> None: ...

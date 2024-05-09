@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TypeVar
+from typing import Iterable, TypeVar
 from logging import Logger
 
 from django.core.mail import send_mail, send_mass_mail
@@ -34,7 +34,7 @@ class EmailNotificationService(BaseNotificationService):
         except AttributeError:
             self.logger.warning(
                 msg=f'"{subject}" does not have an email address',
-                extra={'info': f'cls: {object.__class__}, id: {object.id}'}
+                extra={'info': f'cls: {object.__class__}, id: {object.id}'},
             )
             raise NotificationServiceException(
                 f'{subject} does not have an email'
@@ -50,7 +50,7 @@ class EmailNotificationService(BaseNotificationService):
     def send_notification_group(
         self,
         message: str,
-        objects: list[ET],
+        objects: Iterable[ET],
         from_email: str = settings.EMAIL_FROM,
     ) -> None:
         data = []
@@ -60,7 +60,7 @@ class EmailNotificationService(BaseNotificationService):
             except AttributeError:
                 self.logger.warning(
                     msg=f'"{obj}" does not have an email address',
-                    extra={'info': f'cls: {obj.__class__}, id: {obj.id}'}
+                    extra={'info': f'cls: {obj.__class__}, id: {obj.id}'},
                 )
                 continue
             data.append((str(obj), message, from_email, (email,)))
@@ -85,7 +85,7 @@ class PhoneNotificationService(BaseNotificationService):
         except AttributeError:
             self.logger.warning(
                 msg=f'"{subject}" does not have an phone number',
-                extra={'info': f'cls: {object.__class__}, id: {object.id}'}
+                extra={'info': f'cls: {object.__class__}, id: {object.id}'},
             )
             raise NotificationServiceException(
                 f'{subject} does not have a phone number'
@@ -95,7 +95,7 @@ class PhoneNotificationService(BaseNotificationService):
     def send_notification_group(
         self,
         message: str,
-        objects: list[ET],
+        objects: Iterable[ET],
     ) -> None:
         for obj in objects:
             try:
@@ -103,7 +103,7 @@ class PhoneNotificationService(BaseNotificationService):
             except AttributeError:
                 self.logger.warning(
                     msg=f'"{obj}" does not have a phone number',
-                    extra={'info': f'cls: {obj.__class__}, id: {obj.id}'}
+                    extra={'info': f'cls: {obj.__class__}, id: {obj.id}'},
                 )
                 continue
             print(f'{obj} with phone {phone} got a message:\n{message}')
@@ -129,7 +129,7 @@ class ComposedNotificationService(BaseNotificationService):
     def send_notification_group(
         self,
         message: str,
-        objects: list[ET],
+        objects: Iterable[ET],
     ) -> None:
         for service in self.notification_services:
             service.send_notification_group(
@@ -161,13 +161,20 @@ class CeleryNotificationService(BaseNotificationService, Task):
     def send_notification_group(
         self,
         message: str,
-        objects: list[ET],
+        objects: Iterable[ET],
     ) -> None:
-        first = next(objects)
+        try:
+            first_object = next(objects)
+        except StopIteration:
+            self.logger.info(
+                msg='"Objects" argument is empty',
+                extra={'info': f'{objects}'},
+            )
+            return
         self.delay(
             message=message,
-            object_ids=[first.id]+[o.id for o in objects],
-            model_type=first.__class__.__name__,
+            object_ids=[first_object.id] + [o.id for o in objects],
+            model_type=first_object.__class__.__name__,
             group=True,
         )
 

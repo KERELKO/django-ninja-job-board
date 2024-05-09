@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('vacancies', '0003_rename_jobseekers_vacancy_interested'),
     ]

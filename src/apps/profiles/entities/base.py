@@ -10,5 +10,4 @@ class BaseProfileEntity:
     email: str
 
     @abstractmethod
-    def to_dict(self) -> dict:
-        ...
+    def to_dict(self) -> dict: ...

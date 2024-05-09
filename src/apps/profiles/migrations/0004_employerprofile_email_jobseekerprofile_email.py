@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('profiles', '0003_alter_jobseekerprofile_options_and_more'),
     ]
@@ -13,13 +12,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='employerprofile',
             name='email',
-            field=models.CharField(default='kerelkobarabash@gmail.com', max_length=60),
+            field=models.CharField(
+                default='kerelkobarabash@gmail.com', max_length=60
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='jobseekerprofile',
             name='email',
-            field=models.CharField(default='kerelkobarabash@gmail.com', max_length=60),
+            field=models.CharField(
+                default='kerelkobarabash@gmail.com', max_length=60
+            ),
             preserve_default=False,
         ),
     ]

@@ -4,7 +4,7 @@ from ninja import NinjaAPI
 from .v1.vacancies.handlers import router as vacancy_router
 from .v1.profiles.employers.handlers import router as employer_profiler_router
 from .v1.profiles.jobseekers.handlers import (
-    router as jobseeker_profiler_router
+    router as jobseeker_profiler_router,
 )
 
 

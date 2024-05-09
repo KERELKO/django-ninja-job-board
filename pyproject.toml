@@ -17,6 +17,8 @@ celery = "^5.4.0"
 sqlalchemy = "^2.0.29"
 psycopg2-binary = "^2.9.9"
 httpx = "^0.27.0"
+pre-commit = "^3.7.0"
+ruff = "^0.4.3"
 
 [build-system]
 requires = ["poetry-core"]
@@ -24,3 +26,15 @@ build-backend = "poetry.core.masonry.api"
 
 [pytest]
 DJANGO_SETTINGS_MODULE = "src.core.settings.prod"
+
+[tool.ruff]
+line-length = 82
+indent-width = 4
+show-fixes = true
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

@@ -6,8 +6,7 @@ from src.common.converters.exceptions import IncorrectConverterArgument
 
 class ORMJobSeekerConverter(BaseConverter):
     def handle(
-        self,
-        obj: JobSeekerEntity | JobSeekerProfile
+        self, obj: JobSeekerEntity | JobSeekerProfile
     ) -> JobSeekerEntity | JobSeekerProfile:
         if obj.__class__ == JobSeekerEntity:
             return self.convert_to_model(obj)
@@ -19,12 +18,10 @@ class ORMJobSeekerConverter(BaseConverter):
                 choices=[
                     JobSeekerProfile.__name__,
                     JobSeekerEntity.__name__,
-                ]
+                ],
             )
 
-    def convert_to_entity(
-        self, profile: JobSeekerProfile
-    ) -> JobSeekerEntity:
+    def convert_to_entity(self, profile: JobSeekerProfile) -> JobSeekerEntity:
         return JobSeekerEntity(
             id=profile.id,
             first_name=profile.first_name,
@@ -38,10 +35,7 @@ class ORMJobSeekerConverter(BaseConverter):
             allow_notifications=profile.allow_notifications,
         )
 
-    def convert_to_model(
-        self,
-        profile: JobSeekerEntity
-    ) -> JobSeekerProfile:
+    def convert_to_model(self, profile: JobSeekerEntity) -> JobSeekerProfile:
         return JobSeekerProfile(
             id=profile.id,
             first_name=profile.first_name,
