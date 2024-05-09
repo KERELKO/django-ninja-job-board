@@ -41,7 +41,7 @@ class ORMVacancyService(BaseVacancyService):
                 Q(description__icontains=filters.search)
             )
         if filters.is_remote is not None:
-            query &= Q(remote=filters.is_remote)
+            query &= Q(is_remote=filters.is_remote)
         if filters.required_experience__gte:
             query &= Q(
                 required_experience__gte=filters.required_experience__gte
