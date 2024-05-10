@@ -6,11 +6,11 @@ Additionally it has flexible notification system that uses **Celery**.
 
 ## Technologies Used
 
-- [Django](https://www.djangoproject.com/) - High-level Python web framework that encourages rapid development and clean, pragmatic design.
-- [NinjaAPI](https://django-ninja.dev/) - Powerful framework for building APIs in Django with flexible and fast development.
+- [Django](https://www.djangoproject.com/) - High-level Python web framework that encourages rapid development and clean design
+- [NinjaAPI](https://django-ninja.dev/) - Powerful framework for building APIs in Django with flexible and fast development
 - [PostgreSQl](https://www.postgresql.org/) - Relational database management system
-- [Docker](https://www.docker.com/) - Platform for developing, shipping, and running applications in containers.
-- [Redis](https://redis.io/) - Fastest in-memory storage for caching
+- [Docker](https://www.docker.com/) - Platform for developing, shipping, and running applications in containers
+- [Redis](https://redis.io/) - Fastest in-memory storage, great for caching
 - [Celery](https://docs.celeryq.dev/en/stable/) - Simple, flexible, and reliable distributed system to process vast amounts of messages
 - [RabbitMQ](https://www.rabbitmq.com/) - Reliable and mature messaging and streaming broker
 ## Installation
@@ -182,7 +182,7 @@ If you'd like to contribute to this project, feel free to fork the repository an
 ```
 TODO:
  - [ ] Make the structure more flexible by passing entities in use cases and services instead of ids
- - [ ] Cache the content
+ - [X] Cache the content
  - [ ] Cover more parts of the project with robust tests  
 ### The main structure of the project is taken from the repo below thanks to the author!
 Boilerplate: https://github.com/greedWizard/django-docker-compose-postgres-boilerplate
