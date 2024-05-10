@@ -48,7 +48,9 @@ class ORMVacancyService(BaseVacancyService):
         if filters.is_remote is not None:
             query &= Q(is_remote=filters.is_remote)
         if filters.required_experience__gte:
-            query &= Q(required_experience__gte=filters.required_experience__gte)
+            query &= Q(
+                required_experience__gte=filters.required_experience__gte
+            )
         if filters.required_skills:
             # ?Icontains does not work with ArrayField
             skills = [skill.lower() for skill in filters.required_skills]
@@ -72,7 +74,7 @@ class ORMVacancyService(BaseVacancyService):
         limit: int = 20,
     ) -> list[VacancyEntity]:
         query = self._build_queryset(filters=filters)
-        vacancy_list = Vacancy.objects.filter(query)[offset : offset + limit]
+        vacancy_list = Vacancy.objects.filter(query)[offset:offset+limit]
         return [self.converter.handle(vacancy) for vacancy in vacancy_list]
 
     def get_total_count(self, filters: VacancyFilters) -> int:

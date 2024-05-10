@@ -157,7 +157,6 @@ class CeleryNotificationService(BaseNotificationService, Task):
             model_type=object.__class__.__name__,
         )
 
-    # TODO: handle Stop Iteration
     def send_notification_group(
         self,
         message: str,

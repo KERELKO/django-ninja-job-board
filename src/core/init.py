@@ -1,4 +1,5 @@
 from logging import Logger
+
 from django.apps import AppConfig
 from django.conf import settings
 
@@ -19,6 +20,7 @@ class InitConfig(AppConfig):
 
         logger = Container.resolve(Logger)
 
+        # Init Celery worker
         service = Container.resolve(BaseNotificationService)
         if service.__class__ == CeleryNotificationService:
             logger.info(
@@ -31,6 +33,7 @@ class InitConfig(AppConfig):
                 msg='BaseNotificationService is not Celery task',
                 extra={'info': f'__class__: {service.__class__}'},
             )
+        # Log information about cache
         cache_backend = settings.CACHES['default']['BACKEND']
         cache_location = settings.CACHES['default']['LOCATION']
         logger.info(

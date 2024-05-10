@@ -1,4 +1,5 @@
 from django.http import Http404, HttpRequest
+from django.views.decorators.cache import cache_page
 from ninja import Router, Query
 
 from src.api.v1.profiles.jobseekers.schemas import JobSeekerProfileOut
@@ -22,7 +23,7 @@ from .schemas import VacancyIn, VacancyOut
 router = Router(tags=['vacancies'])
 
 
-# TODO: tests
+@cache_page(60 * 3)
 @router.get('', response=APIResponseSchema[ListPaginatedResponse[VacancyOut]])
 def get_vacancy_list(
     request: HttpRequest,

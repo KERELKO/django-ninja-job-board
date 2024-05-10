@@ -3,15 +3,19 @@ import os
 from .base import *  # noqa
 
 
+DEBUG = True
+
 POSTGRES_NAME = os.getenv('POSTGRES_NAME')
 POSTGRES_USER = os.getenv('POSTGRES_USER')
 POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
 POSTGRES_HOST = os.getenv('POSTGRES_HOST')
 POSTGRES_PORT = int(os.getenv('POSTGRES_PORT'))
+
 REDIS_HOST = os.getenv('REDIS_HOST')
 REDIS_PORT = os.getenv('REDIS_PORT')
 
-DEBUG = True
+MESSAGE_BROKER_HOST = os.getenv('MESSAGE_BROKER_HOST')
+MESSAGE_BROKER_PORT = os.getenv('MESSAGE_BROKER_PORT')
 
 DATABASES = {
     'default': {
@@ -39,7 +43,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-CELERY_BROKER_URL = 'amqp://message_broker:5672'
+CELERY_BROKER_URL = f'amqp://{MESSAGE_BROKER_HOST}:{MESSAGE_BROKER_PORT}'
 CELERY_RESULT_BACKEND = (
     f'db+postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@'
     f'{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_NAME}'
