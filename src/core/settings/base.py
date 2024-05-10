@@ -90,6 +90,8 @@ CELERY_TIMEZONE = 'Europe/Kiev'
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 6
 
+DEFAULT_RESPONSE_CACHE_TIMEOUT = 60 * 3
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

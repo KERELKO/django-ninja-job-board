@@ -3,6 +3,7 @@ from django.core.cache import cache
 from ninja import Query, Router
 from ninja.security import django_auth_superuser
 
+from src.common.utils.cache import generate_cache_key_from_request
 from src.apps.profiles.services.base import BaseEmployerService
 from src.apps.profiles.filters import EmployerFilter
 from src.common.container import Container
@@ -24,6 +25,10 @@ def get_employer_list(
     filters: Query[EmployerFilter],
     pagination_in: Query[PaginationIn],
 ) -> APIResponseSchema[ListPaginatedResponse[EmployerProfileOut]]:
+    cache_key = generate_cache_key_from_request(request)
+    response = cache.get(cache_key)
+    if response:
+        return response
     service = Container.resolve(BaseEmployerService)
     profile_list = service.get_list(
         filters=filters,
@@ -40,13 +45,6 @@ def get_employer_list(
         items=[EmployerProfileOut.from_entity(p) for p in profile_list],
         pagination=pg_out,
     )
-    return APIResponseSchema(data=data)
-
-
-@router.get('/ping', response=dict[str, str])
-def ping(request: HttpRequest) -> dict[str, str]:
-    cache.set('hello', 'hello')
-    hello = cache.get('hello')
-    if hello is not None:
-        return {hello: 'world'}
-    return {'ping': 'pong'}
+    response = APIResponseSchema(data=data)
+    cache.set(cache_key, response.model_dump())
+    return response
