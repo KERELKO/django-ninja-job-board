@@ -1,4 +1,3 @@
-import inspect
 from typing import Any, Callable
 
 from django.core.cache import cache
@@ -28,8 +27,6 @@ class cache_handler:  # noqa
             response = cache.get(cache_key)
             if response:
                 return response
-            # hm....
-            # func_params = inspect.signature(func)
             handler_response = func(request, *args, **kwargs)
             cache.set(cache_key, self.timeout)
             return handler_response

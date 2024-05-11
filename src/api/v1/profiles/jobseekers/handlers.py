@@ -1,7 +1,9 @@
 from django.http import HttpRequest, Http404
+from django.core.cache import cache
 from ninja import Query, Router
 from ninja.security import django_auth
 
+from src.common.utils.cache import generate_cache_key_from_request
 from src.common.services.exceptions import ServiceException
 from src.apps.profiles.use_cases.jobseekers import (
     ApplyToVacancyUseCase,
@@ -27,6 +29,10 @@ def get_profile_list(
     pagination_in: Query[PaginationIn],
     filters: Query[JobSeekerFilters],
 ) -> APIResponseSchema[ListPaginatedResponse[JobSeekerProfileOut]]:
+    cache_key = generate_cache_key_from_request(request)
+    response = cache.get(cache_key)
+    if response:
+        return response
     service = Container.resolve(BaseJobSeekerService)
     profile_entities = service.get_list(
         filters=filters,
@@ -45,7 +51,9 @@ def get_profile_list(
             total=total_profile_count,
         ),
     )
-    return APIResponseSchema(data=profiles_list)
+    response = APIResponseSchema(data=profiles_list)
+    cache.set(cache_key, response.model_dump())
+    return response
 
 
 @router.post(
@@ -77,12 +85,18 @@ def apply_to_vacancy(
 def get_my_profile(
     request: HttpRequest,
 ) -> APIResponseSchema[JobSeekerProfileOut]:
+    cache_key = generate_cache_key_from_request(request)
+    response = cache.get(cache_key)
+    if response:
+        return response
     service = Container.resolve(BaseJobSeekerService)
     try:
         profile = service.get_by_user_id(user_id=request.user.id)
     except ServiceException as e:
         raise Http404(e)
-    return APIResponseSchema(data=JobSeekerProfileOut.from_entity(profile))
+    response = APIResponseSchema(data=JobSeekerProfileOut.from_entity(profile))
+    cache.set(cache_key, response.model_dump())
+    return response
 
 
 @router.patch('/{id}', response=APIResponseSchema[JobSeekerProfileOut])

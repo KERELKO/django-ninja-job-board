@@ -11,18 +11,7 @@ def get_elapsed_time_with_message(
     - An integer representing the time elapsed
     - A string indicating the time unit (e.g., days, months)
     - A string message that describes the elapsed time
-
-    Example:
-    --------
-    >>> elapsed_time = timedelta(days=40)
-    >>> elapsed_time, time_unit, message = get_elapsed_time_with_message(
-    ...     elapsed_time
-    ... )
-    >>> print(
-    ...     f'Time elapsed since creation: {elapsed_time} {time_unit} {message}'
-    ... )
     """
-    # Determine time unit and message based on elapsed time
     if elapsed_time.days >= 30:
         months = elapsed_time.days // 30
         return (
