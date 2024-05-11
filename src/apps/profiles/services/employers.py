@@ -65,6 +65,9 @@ class ORMEmployerService(BaseEmployerService):
         for employer in EmployerProfile.objects.filter(query):
             yield employer
 
-    def get(self, id: int) -> EmployerEntity:
-        employer = EmployerProfile.objects.get(id=id)
+    def get(self, id: int) -> EmployerEntity | None:
+        try:
+            employer = EmployerProfile.objects.get(id=id)
+        except EmployerProfile.DoesNotExist:
+            raise ServiceException('profile not found')
         return self.converter.handle(employer)

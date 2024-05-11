@@ -71,8 +71,11 @@ class ORMJobSeekerService(BaseJobSeekerService):
             ]
         return [self.converter.handle(profile) for profile in profile_list]
 
-    def get(self, id: int) -> JobSeekerEntity:
-        profile = self._get_model_or_raise_exception(id=id)
+    def get(self, id: int) -> JobSeekerEntity | None:
+        try:
+            profile = self._get_model_or_raise_exception(id=id)
+        except JobSeekerProfile.DoesNotExist:
+            raise ServiceException('profile not found')
         return self.converter.handle(profile)
 
     def get_all(

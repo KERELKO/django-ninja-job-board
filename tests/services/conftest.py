@@ -5,6 +5,8 @@ import random
 import pytest
 import factory
 
+from tests.fake.services.vacancies import FakeVacancyService
+from src.apps.vacancies.services.base import BaseVacancyService
 from src.common.services.notifications import (
     ComposedNotificationService,
     PhoneNotificationService,
@@ -17,11 +19,30 @@ from src.apps.profiles.entities.jobseekers import JobSeekerEntity
 from src.common.container import Container
 
 
+available_skills = [
+    'python', 'django', 'fastapi', 'docker', 'redis', 'sql', 'postgresql',
+    'rabbitmq', 'design patterns', 'algorithms', 'pytest', 'javascript',
+    'css', 'html', 'mongodb', 'tests', 'architecture', 'oop', 'devops',
+    'vue.js', 'angular', 'rust', 'c++', 'flask', 'sqlalchemy', 'asyncio',
+]
+
+
+class EmployerEntityFactory(factory.Factory):
+    class Meta:
+        model = EmployerEntity
+
+    id = random.randint(1, 20)
+    first_name = factory.Faker('first_name')
+    last_name = factory.Faker('last_name')
+    email = factory.Faker('email')
+    company_name = 'Test company'
+
+
 class JobSeekerEntityFactory(factory.Factory):
     class Meta:
         model = JobSeekerEntity
 
-    id = random.randint(1, 300)
+    id = random.randint(1, 20)
     first_name = factory.Faker('first_name')
     last_name = factory.Faker('last_name')
     email = factory.Faker('email')
@@ -29,7 +50,7 @@ class JobSeekerEntityFactory(factory.Factory):
     phone = factory.Faker('phone_number')
     about_me = factory.Faker('sentence')
     experience = 2
-    skills = ['python']
+    skills = random.choices(available_skills, k=8)
     allow_notifications = True
 
 
@@ -38,19 +59,11 @@ class VacancyEntityFactory(factory.Factory):
         model = VacancyEntity
 
     title = factory.Faker('sentence')
+    employer = EmployerEntityFactory.build()
     description = factory.Faker('text')
     created_at = datetime.datetime.now()
-
-
-class EmployerEntityFactory(factory.Factory):
-    class Meta:
-        model = EmployerEntity
-
-    id = random.randint(1, 300)
-    first_name = factory.Faker('first_name')
-    last_name = factory.Faker('last_name')
-    email = factory.Faker('email')
-    company_name = 'Test company'
+    interested_candidates = JobSeekerEntityFactory.create_batch(6)
+    required_skills = random.choices(available_skills, k=2)
 
 
 @pytest.fixture
@@ -96,3 +109,9 @@ def vacancy_entity() -> VacancyEntity:
 @pytest.fixture
 def employer_entity() -> EmployerEntity:
     return EmployerEntityFactory.build()
+
+
+@pytest.fixture
+def vacancy_service() -> BaseVacancyService:
+    vacancy_entity = VacancyEntityFactory.build(id=1)
+    return FakeVacancyService(vacancy_entity)
