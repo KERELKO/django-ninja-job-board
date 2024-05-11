@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+from logging import Logger
 from typing import Iterable
 from django.db.models import Q
 
@@ -10,7 +12,9 @@ from src.common.services.exceptions import ServiceException
 from .base import BaseEmployerService
 
 
+@dataclass
 class ORMEmployerService(BaseEmployerService):
+    logger: Logger
     converter: ORMEmployerConverter = ORMEmployerConverter()
 
     def _get_model_or_raise_exception(
@@ -47,7 +51,7 @@ class ORMEmployerService(BaseEmployerService):
     ) -> list[EmployerEntity]:
         query = self._build_queryset(filters)
         employers = EmployerProfile.objects.filter(query)[
-            offset : offset + limit
+            offset:offset+limit
         ]
         return [self.converter.handle(employer) for employer in employers]
 

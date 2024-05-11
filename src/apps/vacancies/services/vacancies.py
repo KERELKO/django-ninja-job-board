@@ -1,8 +1,10 @@
 from dataclasses import dataclass
+from logging import Logger
 from typing import Iterable
 
 from django.db.models import Q
 
+from src.common.converters.base import BaseConverter
 from src.apps.profiles.entities.jobseekers import JobSeekerEntity
 from src.common.services.exceptions import ServiceException
 from src.apps.profiles.services.jobseekers import ORMJobSeekerService
@@ -16,6 +18,8 @@ from .base import BaseVacancyService
 
 @dataclass
 class ORMVacancyService(BaseVacancyService):
+    logger: Logger
+    converter: BaseConverter
     employer_service: ORMEmployerService
     jobseeker_service: ORMJobSeekerService
 

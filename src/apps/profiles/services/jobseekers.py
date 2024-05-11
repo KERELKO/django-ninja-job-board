@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from logging import Logger
 from typing import Iterable
 from django.db.models import Q
 
@@ -14,6 +15,7 @@ from .base import BaseJobSeekerService
 
 @dataclass
 class ORMJobSeekerService(BaseJobSeekerService):
+    logger: Logger
     converter: ORMJobSeekerConverter = ORMJobSeekerConverter()
 
     def _get_model_or_raise_exception(
@@ -61,11 +63,11 @@ class ORMJobSeekerService(BaseJobSeekerService):
                 'interested_candidates'
             ).get(id=filters.vacancy_id)
             profile_list = vacancy.interested_candidates.filter(query)[
-                offset : offset + limit
+                offset:offset+limit
             ]
         else:
             profile_list = JobSeekerProfile.objects.filter(query)[
-                offset : offset + limit
+                offset:offset+limit
             ]
         return [self.converter.handle(profile) for profile in profile_list]
 

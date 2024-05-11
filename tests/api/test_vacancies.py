@@ -16,5 +16,9 @@ def test_can_get_vacancy_list_with_filters():
     assert response.status_code == 200
 
 
-def test_can_create_vacancy_and_employer_profile():
-    ...
+def test_can_create_vacancy(dummy_vacancy):
+    response = httpx.post(
+        'http://localhost:8000/api/vacancies',
+        json=dummy_vacancy,
+    )
+    assert response.status_code == 200
