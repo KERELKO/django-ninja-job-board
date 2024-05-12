@@ -22,8 +22,8 @@ To install this project:
 ```
 git clone https://github.com/KERELKO/Django-ninja-job-board
 ```
-2. create __.env__ file based on **.env.example**
-3. move to directory with __docker-compose.yaml__ and run:
+2. move to directory with __.env.example__ and create __.env__ file based on **.env.example**
+3. in the same directory run:
 ```
 docker compose up --build
 ```
@@ -57,13 +57,13 @@ If you'd like to contribute to this project, feel free to fork the repository an
 
 ```
 .
+├── docker-compose.yaml
 ├── Dockerfile
 ├── Makefile
-├── README.md
-├── docker-compose.yaml
 ├── manage.py
 ├── poetry.lock
 ├── pyproject.toml
+├── README.md
 ├── src
 │   ├── api
 │   │   ├── __init__.py
@@ -72,117 +72,131 @@ If you'd like to contribute to this project, feel free to fork the repository an
 │   │   └── v1
 │   │       ├── __init__.py
 │   │       ├── profiles
-│   │       │   ├── __init__.py
 │   │       │   ├── employers
-│   │       │   │   ├── __init__.py
 │   │       │   │   ├── handlers.py
+│   │       │   │   ├── __init__.py
 │   │       │   │   └── schemas.py
+│   │       │   ├── __init__.py
 │   │       │   └── jobseekers
-│   │       │       ├── __init__.py
 │   │       │       ├── handlers.py
+│   │       │       ├── __init__.py
 │   │       │       └── schemas.py
 │   │       └── vacancies
-│   │           ├── __init__.py
 │   │           ├── handlers.py
+│   │           ├── __init__.py
 │   │           └── schemas.py
 │   ├── apps
 │   │   ├── __init__.py
 │   │   ├── profiles
-│   │   │   ├── __init__.py
 │   │   │   ├── admin.py
 │   │   │   ├── apps.py
 │   │   │   ├── converters
-│   │   │   │   ├── __init__.py
 │   │   │   │   ├── employers.py
+│   │   │   │   ├── __init__.py
 │   │   │   │   └── jobseekers.py
 │   │   │   ├── entities
-│   │   │   │   ├── __init__.py
 │   │   │   │   ├── base.py
 │   │   │   │   ├── employers.py
+│   │   │   │   ├── __init__.py
 │   │   │   │   └── jobseekers.py
 │   │   │   ├── filters.py
+│   │   │   ├── __init__.py
 │   │   │   ├── models
-│   │   │   │   ├── __init__.py
 │   │   │   │   ├── base.py
 │   │   │   │   ├── employers.py
+│   │   │   │   ├── __init__.py
 │   │   │   │   └── jobseekers.py
 │   │   │   ├── services
-│   │   │   │   ├── __init__.py
 │   │   │   │   ├── base.py
 │   │   │   │   ├── employers.py
+│   │   │   │   ├── __init__.py
 │   │   │   │   └── jobseekers.py
 │   │   │   └── use_cases
 │   │   │       └── jobseekers.py
 │   │   ├── users
-│   │   │   ├── __init__.py
 │   │   │   ├── admin.py
 │   │   │   ├── apps.py
 │   │   │   ├── entities.py
 │   │   │   ├── exceptions.py
+│   │   │   ├── __init__.py
 │   │   │   ├── models.py
 │   │   │   └── services
 │   │   │       └── user.py
 │   │   └── vacancies
-│   │       ├── __init__.py
 │   │       ├── admin.py
 │   │       ├── apps.py
 │   │       ├── converters.py
 │   │       ├── entities.py
+│   │       ├── enums.py
 │   │       ├── filters.py
+│   │       ├── __init__.py
 │   │       ├── models.py
 │   │       ├── services
-│   │       │   ├── __init__.py
 │   │       │   ├── base.py
+│   │       │   ├── __init__.py
 │   │       │   └── vacancies.py
 │   │       └── use_cases
 │   │           └── vacancies.py
 │   ├── common
-│   │   ├── __init__.py
 │   │   ├── container.py
 │   │   ├── converters
-│   │   │   ├── __init__.py
 │   │   │   ├── base.py
-│   │   │   └── exceptions.py
+│   │   │   ├── exceptions.py
+│   │   │   └── __init__.py
 │   │   ├── filters
 │   │   │   ├── __init__.py
 │   │   │   └── pagination.py
+│   │   ├── __init__.py
 │   │   ├── models
-│   │   │   ├── __init__.py
 │   │   │   ├── base.py
-│   │   │   └── exeptions.py
+│   │   │   ├── exeptions.py
+│   │   │   └── __init__.py
 │   │   ├── services
-│   │   │   ├── __init__.py
 │   │   │   ├── base.py
 │   │   │   ├── exceptions.py
+│   │   │   ├── __init__.py
 │   │   │   └── notifications.py
 │   │   └── utils
+│   │       ├── cache.py
 │   │       ├── __init__.py
 │   │       ├── orm.py
 │   │       └── time.py
-│   ├── core
-│   │   ├── __init__.py
-│   │   ├── asgi.py
-│   │   ├── celery.py
-│   │   ├── exceptions.py
-│   │   ├── init.py
-│   │   ├── settings
-│   │   │   ├── __init__.py
-│   │   │   ├── base.py
-│   │   │   ├── local.py
-│   │   │   └── prod.py
-│   │   ├── urls.py
-│   │   └── wsgi.py
-│   └── db.sqlite3
+│   └── core
+│       ├── asgi.py
+│       ├── celery.py
+│       ├── exceptions.py
+│       ├── __init__.py
+│       ├── init.py
+│       ├── settings
+│       │   ├── base.py
+│       │   ├── __init__.py
+│       │   ├── local.py
+│       │   └── prod.py
+│       ├── urls.py
+│       └── wsgi.py
 └── tests
+    ├── api
+    │   ├── conftest.py
+    │   └── test_vacancy_handlers.py
+    ├── fake
+    │   └── services
+    │       ├── __init__.py
+    │       ├── jobseekers.py
+    │       └── vacancies.py
     ├── __init__.py
-    └── services
-        ├── __init__.py
+    ├── services
+    │   ├── conftest.py
+    │   ├── test_common_services.py
+    │   └── test_vacancy_service.py
+    └── use_cases
         ├── conftest.py
-        └── test_vacancies.py
+        ├── test_jobseeker_use_cases.py
+        └── test_vacancy_use_cases.py
 ```
+
 TODO:
  - [ ] Make the structure more flexible by passing entities in use cases and services instead of ids
  - [X] Cache the content
- - [ ] Cover more parts of the project with robust tests  
+ - [x] Cover more parts of the project with robust tests  
 ### The main structure of the project is taken from the repo below thanks to the author!
 Boilerplate: https://github.com/greedWizard/django-docker-compose-postgres-boilerplate

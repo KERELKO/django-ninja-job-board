@@ -32,7 +32,9 @@ class FakeVacancyService(BaseVacancyService):
         return len(self.vacancies)
 
     def create(self, employer_id: int, **vacancy_data) -> VacancyEntity:
-        self.vacancies.append(VacancyEntity(**vacancy_data))
+        new_vacancy = VacancyEntity(**vacancy_data)
+        self.vacancies.append(new_vacancy)
+        return new_vacancy
 
     def add_candidate(self, candidate_id: int, vacancy_id: int) -> None:
         for v in self.vacancies:

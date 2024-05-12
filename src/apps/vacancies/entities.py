@@ -9,7 +9,7 @@ from src.apps.profiles.entities.jobseekers import JobSeekerEntity
 class VacancyEntity:
     title: str
     description: str
-    created_at: datetime
+    created_at: datetime = field(default_factory=datetime.now)
     id: int | None = None
     location: str = ''
     salary: int = 0
