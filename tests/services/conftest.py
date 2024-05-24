@@ -1,3 +1,4 @@
+from dataclasses import field
 import datetime
 from logging import Logger
 import random
@@ -5,8 +6,10 @@ import random
 import pytest
 import factory
 
+from tests.fake.services.jobseekers import FakeJobSeekerService
 from tests.fake.services.vacancies import FakeVacancyService
 from src.apps.vacancies.services.base import BaseVacancyService
+from src.apps.profiles.services.base import BaseJobSeekerService
 from src.common.services.notifications import (
     ComposedNotificationService,
     PhoneNotificationService,
@@ -61,7 +64,7 @@ class VacancyEntityFactory(factory.Factory):
     title = factory.Faker('sentence')
     employer = EmployerEntityFactory.build()
     description = factory.Faker('text')
-    created_at = datetime.datetime.now()
+    created_at = field(default_factory=datetime.datetime)
     interested_candidates = JobSeekerEntityFactory.create_batch(6)
     required_skills = random.choices(available_skills, k=2)
 
@@ -115,3 +118,9 @@ def employer_entity() -> EmployerEntity:
 def vacancy_service() -> BaseVacancyService:
     vacancy_entity = VacancyEntityFactory.build(id=1)
     return FakeVacancyService(vacancy_entity)
+
+
+@pytest.fixture
+def jobseeker_service() -> BaseJobSeekerService:
+    jobseeker_entity = JobSeekerEntityFactory.build(id=1)
+    return FakeJobSeekerService(jobseeker_entity)

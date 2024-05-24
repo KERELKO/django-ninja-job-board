@@ -5,7 +5,7 @@ from .base import BaseProfileEntity
 
 @dataclass
 class EmployerEntity(BaseProfileEntity):
-    company_name: str
+    company_name: str | None = None
 
     def to_dict(self) -> dict:
         return {

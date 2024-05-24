@@ -5,10 +5,10 @@ from .base import BaseProfileEntity
 
 @dataclass
 class JobSeekerEntity(BaseProfileEntity):
-    age: int
-    phone: str
-    about_me: str
-    experience: int
+    age: int | None = None
+    phone: str | None = None
+    about_me: str | None = None
+    experience: int | None = None
     skills: list[str] = field(default_factory=list)
     allow_notifications: bool = False
 

@@ -5,8 +5,8 @@ from typing import Iterable
 from django.db.models import Q
 
 from src.common.converters.base import BaseConverter
-from src.apps.profiles.entities.jobseekers import JobSeekerEntity
 from src.common.services.exceptions import ServiceException
+from src.apps.profiles.entities.jobseekers import JobSeekerEntity
 from src.apps.profiles.services.jobseekers import ORMJobSeekerService
 from src.apps.profiles.services.employers import ORMEmployerService
 from src.apps.vacancies.filters import VacancyFilters
@@ -99,14 +99,19 @@ class ORMVacancyService(BaseVacancyService):
         for vacancy in Vacancy.objects.filter(query):
             yield self.converter.handle(vacancy)
 
-    def create(self, employer_id: int, **vacancy_data) -> VacancyEntity:
+    def create(
+        self,
+        entity: VacancyEntity,
+        employer_id: int,
+    ) -> VacancyEntity:
         employer = self.employer_service._get_model_or_raise_exception(
             id=employer_id
         )
-        new_vacancy = Vacancy.objects.create(
-            employer=employer,
-            **vacancy_data,
-        )
+        new_vacancy = Vacancy(employer=employer)
+        for field, val in entity.to_dict().items():
+            if val is not None or field not in ['pk', 'id']:
+                setattr(new_vacancy, field, val)
+        new_vacancy.save()
         return self.converter.handle(new_vacancy)
 
     def add_candidate(self, vacancy_id: int, candidate_id: int) -> None:

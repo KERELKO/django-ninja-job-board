@@ -1,8 +1,10 @@
+from django.conf import settings
 from django.http import HttpRequest, Http404
 from django.core.cache import cache
 from ninja import Query, Router
 from ninja.security import django_auth
 
+from src.apps.profiles.entities.jobseekers import JobSeekerEntity
 from src.common.utils.cache import generate_cache_key_from_request
 from src.common.services.exceptions import ServiceException
 from src.apps.profiles.use_cases.jobseekers import (
@@ -52,7 +54,11 @@ def get_profile_list(
         ),
     )
     response = APIResponseSchema(data=profiles_list)
-    cache.set(cache_key, response.model_dump())
+    cache.set(
+        cache_key,
+        response.model_dump(),
+        timeout=settings.DEFAULT_RESPONSE_CACHE_TIMEOUT,
+    )
     return response
 
 
@@ -95,7 +101,11 @@ def get_my_profile(
     except ServiceException as e:
         raise Http404(e)
     response = APIResponseSchema(data=JobSeekerProfileOut.from_entity(profile))
-    cache.set(cache_key, response.model_dump())
+    cache.set(
+        cache_key,
+        response.model_dump(),
+        timeout=settings.DEFAULT_RESPONSE_CACHE_TIMEOUT,
+    )
     return response
 
 
@@ -106,10 +116,9 @@ def update_profile(
     profile: Query[JobSeekerProfileUpdate],
 ) -> APIResponseSchema[JobSeekerProfileOut]:
     use_case = Container.resolve(UpdateJobSeekerProfileUseCase)
-    if not profile.skills:
-        profile.skills = None
+    entity = JobSeekerEntity(id=id, **profile.model_dump())
     try:
-        updated_profile = use_case.execute(id, **profile.model_dump())
+        updated_profile = use_case.execute(profile=entity)
     except ServiceException as e:
         raise Http404(e)
     return APIResponseSchema(

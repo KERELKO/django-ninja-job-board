@@ -3,6 +3,7 @@ from django.http import Http404, HttpRequest
 from django.core.cache import cache
 from ninja import Router, Query
 
+from src.apps.vacancies.entities import VacancyEntity
 from src.common.utils.cache import generate_cache_key_from_request
 from src.common.services.exceptions import ServiceException
 from src.common.container import Container
@@ -72,10 +73,10 @@ def create_vacancy(
     usecase = Container.resolve(CreateVacancyUseCase)
     data = vacancy_data.model_dump()
     employer_id = data.pop('employer_id')
+    entity = VacancyEntity(**data)
     try:
         vacancy_entity = usecase.execute(
-            employer_id=employer_id,
-            **data,
+            entity=entity, employer_id=employer_id,
         )
     except ServiceException as e:
         raise Http404(e)

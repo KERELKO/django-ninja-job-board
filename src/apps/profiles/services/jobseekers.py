@@ -90,9 +90,9 @@ class ORMJobSeekerService(BaseJobSeekerService):
         query = self._build_queryset(filters)
         return JobSeekerProfile.objects.filter(query).count()
 
-    def update(self, id: int, **data) -> JobSeekerEntity:
-        profile = self._get_model_or_raise_exception(id=id)
-        for field, value in data.items():
+    def update(self, entity: JobSeekerEntity) -> JobSeekerEntity:
+        profile = self._get_model_or_raise_exception(id=entity.id)
+        for field, value in entity.to_dict().items():
             if value is not None:
                 if hasattr(profile, field):
                     setattr(profile, field, value)
