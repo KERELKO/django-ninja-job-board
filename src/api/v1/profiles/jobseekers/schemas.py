@@ -3,7 +3,8 @@ from ninja import Schema, Field
 from src.apps.profiles.entities.jobseekers import JobSeekerEntity
 
 
-class BaseJobSeekerProfileSchema(Schema):
+class JobSeekerProfileIn(Schema):
+    user_id: int
     first_name: str
     last_name: str
     age: int = 0
@@ -14,11 +15,7 @@ class BaseJobSeekerProfileSchema(Schema):
     allow_notifications: bool = False
 
 
-class JobSeekerProfileIn(BaseJobSeekerProfileSchema):
-    user_id: int
-
-
-class JobSeekerProfileUpdate(BaseJobSeekerProfileSchema):
+class JobSeekerProfileUpdate(Schema):
     first_name: str | None = None
     last_name: str | None = None
     age: int | None = None
@@ -29,9 +26,17 @@ class JobSeekerProfileUpdate(BaseJobSeekerProfileSchema):
     allow_notifications: bool | None = None
 
 
-class JobSeekerProfileOut(BaseJobSeekerProfileSchema):
+class JobSeekerProfileOut(Schema):
     id: int
+    first_name: str
+    last_name: str
+    age: int = 0
+    about_me: str
+    phone: str = ''
+    experience: int = 0
+    skills: list[str]
+    allow_notifications: bool = False
 
-    @staticmethod
-    def from_entity(entity: JobSeekerEntity) -> 'JobSeekerProfileOut':
-        return JobSeekerProfileOut(**entity.to_dict())
+    @classmethod
+    def from_entity(cls, entity: JobSeekerEntity) -> 'JobSeekerProfileOut':
+        return cls(**entity.to_dict())

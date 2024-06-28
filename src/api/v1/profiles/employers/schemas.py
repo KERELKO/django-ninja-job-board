@@ -4,24 +4,29 @@ from pydantic import ConfigDict
 from src.apps.profiles.entities.employers import EmployerEntity
 
 
-class BaseEmployerProfileSchema(Schema):
+class EmployerProfileOut(Schema):
+    id: int
+    first_name: str
+    last_name: str
+    email: str
+    company_name: str = ''
+
+    @classmethod
+    def from_entity(cls, entity: EmployerEntity) -> 'EmployerProfileOut':
+        return cls(**entity.to_dict())
+
+
+class EmployerProfileIn(Schema):
+    user_id: int
     first_name: str
     last_name: str
     email: str
     company_name: str = ''
 
 
-class EmployerProfileOut(BaseEmployerProfileSchema):
-    id: int
-
-    @staticmethod
-    def from_entity(entity: EmployerEntity) -> 'EmployerProfileOut':
-        return EmployerProfileOut(**entity.to_dict())
-
-
-class EmployerProfileIn(BaseEmployerProfileSchema):
-    user_id: int
-
-
-class EmployerProfileUpdate(BaseEmployerProfileSchema):
+class EmployerProfileUpdate(Schema):
     model_config = ConfigDict(extra='forbid')
+    first_name: str
+    last_name: str
+    email: str
+    company_name: str = ''

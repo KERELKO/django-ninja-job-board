@@ -25,7 +25,7 @@ class ORMVacancyService(BaseVacancyService):
 
     def _get_model_or_raise_exception(
         self,
-        message: str = None,
+        message: str | None = None,
         related: bool = False,
         **lookup_parameters,
     ) -> Vacancy:

@@ -41,7 +41,7 @@ class FilterCandidatesInVacancyUseCase:
         interested_candidates: list[JobSeekerEntity],
         vacancy: VacancyEntity,
     ) -> list[JobSeekerEntity]:
-        candidates: list[JobSeekerEntity] = []
+        candidates: list[tuple[float, JobSeekerEntity]] = []
         for candidate in interested_candidates:
             score = VacancyCriteria.get_candidate_rating(
                 candidate=candidate, vacancy=vacancy
@@ -69,7 +69,7 @@ class FilterCandidatesInVacancyUseCase:
         offset: int = 0,
         limit: int = 20,
     ) -> list[JobSeekerEntity]:
-        vacancy: VacancyEntity = self.vacancy_service.get(id=vacancy_id)
+        vacancy: VacancyEntity | None = self.vacancy_service.get(id=vacancy_id)
         interested_candidates = self.vacancy_service.get_list_candidates(
             vacancy_id=vacancy_id,
             offset=offset,

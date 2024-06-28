@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import Iterable, TypeVar, Any
+from typing import Iterable, TypeVar, Any, Generic
 
 
 ET = TypeVar('ET')
 
 
-class BaseService(ABC):
+class BaseService(Generic[ET], ABC):
     @abstractmethod
     def get_list(self, filters: Any, offset: int, limit: int) -> list[ET]: ...
 
@@ -19,7 +19,7 @@ class BaseService(ABC):
     def get_all(self, filters: Any) -> Iterable[ET]: ...
 
 
-class BaseNotificationService(ABC):
+class BaseNotificationService(Generic[ET], ABC):
     @abstractmethod
     def send_notification(
         self,

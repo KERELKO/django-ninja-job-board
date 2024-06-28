@@ -40,8 +40,8 @@ class Container:
         return Container._init()
 
     @staticmethod
-    def resolve(cls):
-        return Container.get().resolve(cls)
+    def resolve(base_cls):
+        return Container.get().resolve(base_cls)
 
     @staticmethod
     def _init():

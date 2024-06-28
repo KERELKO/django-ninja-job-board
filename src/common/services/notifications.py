@@ -19,7 +19,7 @@ ET = TypeVar('ET')
 
 
 @dataclass(unsafe_hash=True)
-class EmailNotificationService(BaseNotificationService):
+class EmailNotificationService(BaseNotificationService[ET]):
     logger: Logger
 
     def send_notification(
@@ -71,7 +71,7 @@ class EmailNotificationService(BaseNotificationService):
 
 
 @dataclass(unsafe_hash=True)
-class PhoneNotificationService(BaseNotificationService):
+class PhoneNotificationService(BaseNotificationService[ET]):
     logger: Logger
 
     def send_notification(
@@ -110,7 +110,7 @@ class PhoneNotificationService(BaseNotificationService):
 
 
 @dataclass(unsafe_hash=True)
-class ComposedNotificationService(BaseNotificationService):
+class ComposedNotificationService(BaseNotificationService[ET]):
     notification_services: tuple[BaseNotificationService]
 
     def send_notification(
@@ -139,7 +139,7 @@ class ComposedNotificationService(BaseNotificationService):
 
 
 @dataclass(unsafe_hash=True)
-class CeleryNotificationService(BaseNotificationService, Task):
+class CeleryNotificationService(BaseNotificationService[ET], Task):
     logger: Logger
     notification_service: BaseNotificationService
     name: str = 'CeleryNotificationTaskService'
