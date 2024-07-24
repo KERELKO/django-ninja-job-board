@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from src.core.exceptions import ApplicationException
 from src.common.services.base import BaseNotificationService
 from src.apps.profiles.filters import JobSeekerFilters
 from src.apps.profiles.entities.jobseekers import JobSeekerEntity
@@ -54,8 +55,8 @@ class FilterCandidatesInVacancyUseCase:
         return sorted_candidates
 
     def _sort_by_scores(
-        self, candidates: list[tuple[int, JobSeekerEntity]],
-    ) -> list[tuple[int, JobSeekerEntity]]:
+        self, candidates: list[tuple[float, JobSeekerEntity]],
+    ) -> list[tuple[float, JobSeekerEntity]]:
         sorted_candidates_with_scores = sorted(
             candidates,
             key=lambda x: x[0],
@@ -70,6 +71,8 @@ class FilterCandidatesInVacancyUseCase:
         limit: int = 20,
     ) -> list[JobSeekerEntity]:
         vacancy: VacancyEntity | None = self.vacancy_service.get(id=vacancy_id)
+        if not vacancy:
+            raise ApplicationException(f'Vacancy with id "{vacancy_id}" not found')
         interested_candidates = self.vacancy_service.get_list_candidates(
             vacancy_id=vacancy_id,
             offset=offset,

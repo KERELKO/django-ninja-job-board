@@ -1,5 +1,6 @@
 from functools import lru_cache
 from logging import Logger, getLogger
+from typing import Any
 
 import punq
 
@@ -40,7 +41,7 @@ class Container:
         return Container._init()
 
     @staticmethod
-    def resolve(base_cls):
+    def resolve(base_cls) -> Any:
         return Container.get().resolve(base_cls)
 
     @staticmethod

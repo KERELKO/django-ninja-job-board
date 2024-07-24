@@ -1,4 +1,5 @@
 from datetime import timezone
+
 from django.db import models
 
 from src.common.utils.time import get_elapsed_time_with_message

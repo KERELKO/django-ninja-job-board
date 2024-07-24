@@ -15,13 +15,13 @@ class ORMVacancyConverter(BaseConverter):
         Entity -> DTO
         DTO -> Entity
         """
-        if obj.__class__ == VacancyModel:
+        if obj.__class__ is VacancyModel:
             return self.convert_to_entity(obj)
-        elif obj.__class__ == VacancyEntity:
+        elif obj.__class__ is VacancyEntity:
             return self.convert_to_model(obj)
         else:
             raise IncorrectConverterArgument(
-                choices=[VacancyModel.__name__, VacancyEntity.__name__]
+                obj=obj, choices=[VacancyModel.__name__, VacancyEntity.__name__]
             )
 
     def convert_to_entity(self, model: VacancyModel) -> VacancyEntity:

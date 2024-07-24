@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 
 
-class AuthException(Exception): ...
+class AuthException(Exception):
+    ...
 
 
 @dataclass
@@ -14,4 +15,5 @@ class PasswordsDidNotMatchException(AuthException):
         return 'Passwords did not match'
 
 
-class IncorrectCredentialsException(AuthException): ...
+class IncorrectCredentialsException(AuthException):
+    ...

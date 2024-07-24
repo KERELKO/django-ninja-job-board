@@ -1,6 +1,6 @@
 from django.db.models import QuerySet
 
-from typing import TypeVar
+from typing import Any
 
 from src.common.models.exeptions import IncorrectModelTypeError
 
@@ -12,14 +12,11 @@ from src.apps.vacancies.entities import VacancyEntity
 from src.apps.vacancies.models import Vacancy
 
 
-T = TypeVar('T')
-
-
 def get_orm_models(
     model_type: str,
     list_ids: list[int],
     first: bool = False,
-) -> QuerySet[T] | T:
+) -> QuerySet[Any] | Any | None:
     """
     Returns a list of Django models or a single object if first=True
     """

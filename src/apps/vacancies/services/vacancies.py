@@ -123,7 +123,7 @@ class ORMVacancyService(BaseVacancyService):
             message=f"Vacancy with id '{vacancy_id}' not found",
             related=True,
         )
-        vacancy.interested_candidates.add(candidate.id)
+        vacancy.interested_candidates.add(candidate.id)  # type: ignore
 
     def get_list_candidates(
         self,

@@ -111,7 +111,7 @@ class PhoneNotificationService(BaseNotificationService[ET]):
 
 @dataclass(unsafe_hash=True)
 class ComposedNotificationService(BaseNotificationService[ET]):
-    notification_services: tuple[BaseNotificationService]
+    notification_services: tuple[BaseNotificationService, ...]
 
     def send_notification(
         self,

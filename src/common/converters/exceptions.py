@@ -1,8 +1,9 @@
-from typing import Any
 from dataclasses import dataclass
+from typing import Any
 
 
-class ConverterException(Exception): ...
+class ConverterException(Exception):
+    ...
 
 
 @dataclass

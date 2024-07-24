@@ -1,16 +1,15 @@
-from django.http import HttpRequest
 from django.core.cache import cache
+from django.http import HttpRequest
 from ninja import Query, Router
 from ninja.security import django_auth_superuser
 
-from src.common.utils.cache import generate_cache_key_from_request
-from src.apps.profiles.services.base import BaseEmployerService
-from src.apps.profiles.filters import EmployerFilter
-from src.common.container import Container
-from src.common.filters.pagination import PaginationIn, PaginationOut
 from src.api.schemas import APIResponseSchema, ListPaginatedResponse
 from src.api.v1.profiles.employers.schemas import EmployerProfileOut
-
+from src.apps.profiles.filters import EmployerFilter
+from src.apps.profiles.services.base import BaseEmployerService
+from src.common.container import Container
+from src.common.filters.pagination import PaginationIn, PaginationOut
+from src.common.utils.cache import generate_cache_key_from_request
 
 router = Router(tags=['employers'])
 

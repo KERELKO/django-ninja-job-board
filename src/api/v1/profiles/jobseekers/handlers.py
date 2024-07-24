@@ -1,24 +1,22 @@
 from django.conf import settings
-from django.http import HttpRequest, Http404
 from django.core.cache import cache
+from django.http import Http404, HttpRequest
 from ninja import Query, Router
 from ninja.security import django_auth
 
+from src.api.schemas import APIResponseSchema, ListPaginatedResponse
 from src.apps.profiles.entities.jobseekers import JobSeekerEntity
-from src.common.utils.cache import generate_cache_key_from_request
-from src.common.services.exceptions import ServiceException
+from src.apps.profiles.filters import JobSeekerFilters
+from src.apps.profiles.services.base import BaseJobSeekerService
 from src.apps.profiles.use_cases.jobseekers import (
-    ApplyToVacancyUseCase,
-    UpdateJobSeekerProfileUseCase,
+    ApplyToVacancyUseCase, UpdateJobSeekerProfileUseCase,
 )
 from src.common.container import Container
 from src.common.filters.pagination import PaginationIn, PaginationOut
-from src.apps.profiles.services.base import BaseJobSeekerService
-from src.apps.profiles.filters import JobSeekerFilters
-from src.api.schemas import APIResponseSchema, ListPaginatedResponse
+from src.common.services.exceptions import ServiceException
+from src.common.utils.cache import generate_cache_key_from_request
 
 from .schemas import JobSeekerProfileOut, JobSeekerProfileUpdate
-
 
 router = Router(tags=['jobseekers'])
 
