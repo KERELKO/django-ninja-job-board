@@ -1,5 +1,3 @@
-from django.conf import settings
-from django.core.cache import cache
 from django.http import Http404, HttpRequest
 from ninja import Query, Router
 from ninja.security import django_auth
@@ -14,7 +12,6 @@ from src.apps.profiles.use_cases.jobseekers import (
 from src.common.container import Container
 from src.common.filters.pagination import PaginationIn, PaginationOut
 from src.common.services.exceptions import ServiceException
-from src.common.utils.cache import generate_cache_key_from_request
 
 from .schemas import JobSeekerProfileOut, JobSeekerProfileUpdate
 
@@ -29,10 +26,6 @@ def get_profile_list(
     pagination_in: Query[PaginationIn],
     filters: Query[JobSeekerFilters],
 ) -> APIResponseSchema[ListPaginatedResponse[JobSeekerProfileOut]]:
-    cache_key = generate_cache_key_from_request(request)
-    response = cache.get(cache_key)
-    if response:
-        return response
     service = Container.resolve(BaseJobSeekerService)
     profile_entities = service.get_list(
         filters=filters,
@@ -52,11 +45,6 @@ def get_profile_list(
         ),
     )
     response = APIResponseSchema(data=profiles_list)
-    cache.set(
-        cache_key,
-        response.model_dump(),
-        timeout=settings.DEFAULT_RESPONSE_CACHE_TIMEOUT,
-    )
     return response
 
 
@@ -89,21 +77,12 @@ def apply_to_vacancy(
 def get_my_profile(
     request: HttpRequest,
 ) -> APIResponseSchema[JobSeekerProfileOut]:
-    cache_key = generate_cache_key_from_request(request)
-    response = cache.get(cache_key)
-    if response:
-        return response
     service = Container.resolve(BaseJobSeekerService)
     try:
-        profile = service.get_by_user_id(user_id=request.user.id)
+        profile = service.get_by_user_id(user_id=request.user.id)  # type: ignore
     except ServiceException as e:
         raise Http404(e)
     response = APIResponseSchema(data=JobSeekerProfileOut.from_entity(profile))
-    cache.set(
-        cache_key,
-        response.model_dump(),
-        timeout=settings.DEFAULT_RESPONSE_CACHE_TIMEOUT,
-    )
     return response
 
 
