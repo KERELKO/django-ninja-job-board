@@ -28,7 +28,7 @@ services:
 
   worker:
     build: .
-    command: celery -A src.core worker -l info  # --loglevel=DEBUG
+    command: celery -A src.core worker -l info
     env_file:
       - .env
     volumes:
@@ -44,15 +44,24 @@ services:
       - app
 
   app:
+    container_name: app
     build: .
     volumes:
       - .:/code/
-    command: python manage.py runserver 0.0.0:8000
+    command: ["./wait-for-it.sh", "db:5432", "--", "uwsgi",
+              "--ini", "/code/config/uwsgi/uwsgi.ini"]
     env_file:
       - .env
     depends_on:
       - db
       - message_broker
       - redis_cache
+
+  nginx:
+    container_name: nginx-1
+    image: nginx:1.23.1
+    volumes:
+      - ./config/nginx:/etc/nginx/templates
+      - .:/code
     ports:
-      - "8000:8000"
+      - "80:80"

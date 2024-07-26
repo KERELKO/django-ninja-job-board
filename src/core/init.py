@@ -27,7 +27,7 @@ class InitConfig(AppConfig):
                 'Using Celery worker',
                 extra={'info': f'__class__: {service.__class__}'}
             )
-            current_app.register_task(service)
+            current_app.register_task(service)  # type: ignore
         else:
             logger.warning(
                 msg='BaseNotificationService is not Celery task',

@@ -2,11 +2,11 @@ import os
 from pathlib import Path
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+ADMINS = (
+    ('Kyryl Barabash', 'kyrylbarabash@gmail.com'),
+)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', default='my_secret_key')
@@ -97,7 +97,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'extra_formatter': {
-            'format': '[{levelname}]({asctime}) {module}: {message}\nextra: {info}',  # noqa
+            'format': '{levelname} {asctime} {module} {message} EXTRA: {info}',  # noqa
             'style': '{',
         },
         'verbose': {
@@ -109,13 +109,13 @@ LOGGING = {
         'django_file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': BASE_DIR.parent / '.django.log',
+            'filename': BASE_DIR.parent / 'logs/.django.log',
             'formatter': 'verbose',
         },
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': BASE_DIR.parent / '.app.log',
+            'filename': BASE_DIR.parent / 'logs/.app.log',
             'formatter': 'extra_formatter',
         },
     },

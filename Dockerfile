@@ -12,12 +12,15 @@ RUN apt update -y && \
     libpq-dev \
     nmap
 
-ADD pyproject.toml /code
+COPY pyproject.toml /code/
 
 RUN pip install --upgrade pip
 RUN pip install poetry
 
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-root --no-interaction --no-ansi
+
+COPY wait-for-it.sh /code/
+RUN chmod +x /code/wait-for-it.sh
 
 COPY . /code/

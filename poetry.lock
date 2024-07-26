@@ -1168,6 +1168,16 @@ files = [
 ]
 
 [[package]]
+name = "uwsgi"
+version = "2.0.26"
+description = "The uWSGI server"
+optional = false
+python-versions = "*"
+files = [
+    {file = "uwsgi-2.0.26.tar.gz", hash = "sha256:86e6bfcd4dc20529665f5b7777193cdc48622fb2c59f0a7f1e3dc32b3882e7f9"},
+]
+
+[[package]]
 name = "vine"
 version = "5.1.0"
 description = "Python promises."
@@ -1212,4 +1222,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "8355fef827b3b1991ab1359e68d186e3322a1340459c8c6f98994cb7ae8a78c0"
+content-hash = "32069733b9ecc77fc17618a1bcc15037d0a1a06545fc1c1a8a15017dd4ec27b9"
