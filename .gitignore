@@ -2,7 +2,6 @@ __pycache__/
 .env
 data/
 *sqlite3
-.app.log
-.django.log
 .pytest_cache
 .ruff_cache
+logs/

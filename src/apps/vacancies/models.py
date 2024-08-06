@@ -7,7 +7,7 @@ from src.apps.profiles.models.employers import EmployerProfile
 from src.common.models.base import TimedBaseModel
 
 
-class AvaiableManager(models.Manager):
+class AvailableManager(models.Manager):
     def get_queryset(self) -> models.QuerySet:
         return Vacancy.objects.filter(open=True)
 
@@ -68,7 +68,7 @@ class Vacancy(TimedBaseModel):
     )
     # Managers
     objects = models.Manager()
-    available = AvaiableManager()
+    available = AvailableManager()
 
     class Meta:
         ordering = ('created_at',)
