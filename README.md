@@ -8,7 +8,7 @@ Additionally it has flexible notification system that uses **Celery**.
 
 - [Django](https://www.djangoproject.com/) - High-level Python web framework that encourages rapid development and clean design
 - [NinjaAPI](https://django-ninja.dev/) - Powerful framework for building APIs in Django with flexible and fast development
-- [PostgreSQl](https://www.postgresql.org/) - Relational database management system
+- [PostgreSQL](https://www.postgresql.org/) - Relational database management system
 - [Docker](https://www.docker.com/) - Platform for developing, shipping, and running applications in containers
 - [Redis](https://redis.io/) - Fastest in-memory storage, great for caching
 - [Celery](https://docs.celeryq.dev/en/stable/) - Simple, flexible, and reliable distributed system to process vast amounts of messages
